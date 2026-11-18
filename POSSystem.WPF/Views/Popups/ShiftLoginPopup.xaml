@@ -1,0 +1,133 @@
+﻿<Window x:Class="POSSystem.WPF.Views.Popups.ShiftLoginPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="تسجيل دخول المناوبة"
+        Width="550"
+        Height="500"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#f8f9fa"
+        FlowDirection="RightToLeft">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml" />
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+            Background="White" 
+            CornerRadius="0,0,15,15" 
+            Padding="25,20"
+            Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" 
+                    Direction="270" 
+                    ShadowDepth="2" 
+                    Opacity="0.05" 
+                    BlurRadius="10" />
+            </Border.Effect>
+            
+            <StackPanel>
+                <TextBlock Text="🔐 تسجيل دخول المناوبة"
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Foreground="#2c3e50"
+                    HorizontalAlignment="Center" />
+                <TextBlock Text="يرجى إدخال بيانات تسجيل الدخول للكاشير"
+                    FontSize="14"
+                    Foreground="#6c757d"
+                    HorizontalAlignment="Center"
+                    Margin="0,5,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Login Form -->
+        <ScrollViewer Grid.Row="1" 
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Disabled"
+            Margin="20,0">
+            <Border 
+                Background="White" 
+                CornerRadius="12" 
+                Padding="40"
+                MinHeight="300">
+                <StackPanel>
+                    <!-- Username/Email -->
+                    <TextBlock Text="البريد الإلكتروني أو اسم المستخدم:" 
+                        FontSize="15" 
+                        FontWeight="SemiBold" 
+                        Margin="0,0,0,10" />
+                    <TextBox x:Name="EmailTextBox"
+                        FontSize="17"
+                        Padding="12"
+                        Height="45"
+                        Margin="0,0,0,25"
+                        Background="#f8f9fa"
+                        BorderBrush="#dee2e6"
+                        KeyDown="EmailTextBox_KeyDown" />
+                    
+                    <!-- Password -->
+                    <TextBlock Text="كلمة المرور:" 
+                        FontSize="15" 
+                        FontWeight="SemiBold" 
+                        Margin="0,0,0,10" />
+                    <PasswordBox x:Name="PasswordBox"
+                        FontSize="17"
+                        Padding="12"
+                        Height="45"
+                        Margin="0,0,0,25"
+                        Background="#f8f9fa"
+                        BorderBrush="#dee2e6"
+                        KeyDown="PasswordBox_KeyDown" />
+                    
+                    <!-- Error Message -->
+                    <TextBlock x:Name="ErrorMessageText"
+                        Text="{Binding ErrorMessage}"
+                        Foreground="#dc3545"
+                        FontSize="13"
+                        Margin="0,0,0,10"
+                        Visibility="Collapsed"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Border Grid.Row="2" Background="White" Padding="20" CornerRadius="15,15,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Button Grid.Column="0" Content="إلغاء"
+                    Click="CancelButton_Click"
+                    Style="{StaticResource OrderTypeButtonStyle}"
+                    Background="#6c757d"
+                    Foreground="White"
+                    Margin="0,0,10,0"
+                    Height="45" />
+                
+                <Button Grid.Column="1" Content="تسجيل الدخول"
+                    Click="LoginButton_Click"
+                    Style="{StaticResource OrderTypeButtonStyle}"
+                    Background="#01922a"
+                    Foreground="White"
+                    Margin="10,0,0,0"
+                    Height="45" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

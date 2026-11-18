@@ -1,0 +1,379 @@
+<Window x:Class="POSSystem.WPF.Views.Popups.AddEmployeeAdvancePopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="إضافة سلفية موظف"
+        Width="500"
+        Height="680"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#f8f9fa"
+        FlowDirection="RightToLeft">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml" />
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" 
+            Background="White" 
+            CornerRadius="0,0,15,15" 
+            Padding="25,20"
+            Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" 
+                    Direction="270" 
+                    ShadowDepth="2" 
+                    Opacity="0.05" 
+                    BlurRadius="10" />
+            </Border.Effect>
+            
+            <StackPanel>
+                <TextBlock Text="💰 إضافة سلفية موظف"
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Foreground="#2c3e50"
+                    HorizontalAlignment="Center" />
+                <TextBlock Text="أدخل تفاصيل السلفية"
+                    FontSize="14"
+                    Foreground="#6c757d"
+                    HorizontalAlignment="Center"
+                    Margin="0,5,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Form Content -->
+        <ScrollViewer Grid.Row="1" 
+            VerticalScrollBarVisibility="Auto"
+            Padding="25,0,25,0">
+            <StackPanel>
+                
+                <!-- Employee -->
+                <Border Background="White" 
+                    CornerRadius="12,12,12,12" 
+                    Padding="20"
+                    Margin="0,0,0,15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" 
+                            Direction="270" 
+                            ShadowDepth="1" 
+                            Opacity="0.03" 
+                            BlurRadius="5" />
+                    </Border.Effect>
+                    
+                    <StackPanel>
+                        <TextBlock Text="الموظف *"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="#2c3e50"
+                            Margin="0,0,0,8" />
+                        <ComboBox x:Name="EmployeeComboBox"
+                            FontSize="14"
+                            Padding="15,12"
+                            Background="#f8f9fa"
+                            BorderThickness="1"
+                            BorderBrush="#dee2e6"
+                            DisplayMemberPath="Name"
+                            SelectedValuePath="Id" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Amount -->
+                <Border Background="White" 
+                    CornerRadius="12,12,12,12" 
+                    Padding="20"
+                    Margin="0,0,0,15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" 
+                            Direction="270" 
+                            ShadowDepth="1" 
+                            Opacity="0.03" 
+                            BlurRadius="5" />
+                    </Border.Effect>
+                    
+                    <StackPanel>
+                        <TextBlock Text="المبلغ *"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="#2c3e50"
+                            Margin="0,0,0,8" />
+                        <TextBox x:Name="AmountTextBox"
+                            Text="0"
+                            TextChanged="AmountTextBox_TextChanged"
+                            FontSize="14"
+                            Padding="15,12"
+                            Background="#f8f9fa"
+                            BorderThickness="1"
+                            BorderBrush="#dee2e6" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Payment Method (Payout Source) -->
+                <Border Background="White" 
+                    CornerRadius="12,12,12,12" 
+                    Padding="20"
+                    Margin="0,0,0,15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" 
+                            Direction="270" 
+                            ShadowDepth="1" 
+                            Opacity="0.03" 
+                            BlurRadius="5" />
+                    </Border.Effect>
+                    
+                    <StackPanel>
+                        <TextBlock Text="مصدر صرف السلفة *"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="#2c3e50"
+                            Margin="0,0,0,8" />
+                        <ComboBox x:Name="PaymentMethodComboBox"
+                            FontSize="13"
+                            Padding="15,10"
+                            Background="#f8f9fa"
+                            BorderThickness="1"
+                            BorderBrush="#dee2e6"
+                            SelectionChanged="PaymentMethodComboBox_SelectionChanged">
+                            <ComboBoxItem Content="💵 نقداً من صندوق الكاشير" Tag="Cash" IsSelected="True" />
+                            <ComboBoxItem Content="🏦 حاسب كريمي" Tag="Wallet_Kuraimi" />
+                            <ComboBoxItem Content="📱 محفظة جيب" Tag="Wallet_Jeeb" />
+                            <ComboBoxItem Content="💰 محفظة فلوسك" Tag="Wallet_Floosak" />
+                            <ComboBoxItem Content="⚡ محفظة ون كاش" Tag="Wallet_OneCash" />
+                            <ComboBoxItem Content="📲 محفظة جوالي" Tag="Wallet_Jawali" />
+                            <ComboBoxItem Content="📱 محفظة موبايل موني" Tag="Wallet_MobileMoney" />
+                            <ComboBoxItem Content="💳 محفظة يمن والت" Tag="Wallet_YemenWallet" />
+                        </ComboBox>
+
+                        <!-- Available Balance Info Banner (Live Balance Indicator) -->
+                        <Border x:Name="AvailableBalanceBorder" Background="#f0fdf4" BorderBrush="#86efac" BorderThickness="1.5" CornerRadius="10" Padding="14,10" Margin="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="AvailableBalanceIcon" Text="💳" FontSize="15" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="AvailableBalanceLabel" Text="الرصيد المتاح في جهة الصرف:" FontSize="13" FontWeight="SemiBold" Foreground="#166534" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock x:Name="AvailableBalanceTextBlock" Grid.Column="2" Text="جاري التحميل..." FontSize="14" FontWeight="Bold" Foreground="#15803d" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Target Shift (Drawer) -->
+                <Border x:Name="TargetShiftBorder"
+                    Background="White" 
+                    CornerRadius="12,12,12,12" 
+                    Padding="20"
+                    Margin="0,0,0,15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" 
+                            Direction="270" 
+                            ShadowDepth="1" 
+                            Opacity="0.03" 
+                            BlurRadius="5" />
+                    </Border.Effect>
+                    
+                    <StackPanel>
+                        <TextBlock Text="صندوق المناوبة للكاشير *"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="#2c3e50"
+                            Margin="0,0,0,8" />
+                        <ComboBox x:Name="TargetShiftComboBox"
+                            FontSize="14"
+                            Padding="15,12"
+                            Background="#f8f9fa"
+                            BorderThickness="1"
+                            BorderBrush="#dee2e6"
+                            DisplayMemberPath="DisplayText"
+                            SelectedValuePath="ShiftId"
+                            SelectionChanged="TargetShiftComboBox_SelectionChanged" />
+                        <TextBlock x:Name="DrawerBalanceHintTextBlock"
+                            Text="يتم الخصم مباشرة من رصيد الصندوق للمناوبة المحددة."
+                            FontSize="12"
+                            Foreground="#6c757d"
+                            Margin="0,6,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Repayment Method -->
+                <Border Background="White" 
+                    CornerRadius="12,12,12,12" 
+                    Padding="20"
+                    Margin="0,0,0,15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" 
+                            Direction="270" 
+                            ShadowDepth="1" 
+                            Opacity="0.03" 
+                            BlurRadius="5" />
+                    </Border.Effect>
+                    
+                    <StackPanel>
+                        <TextBlock Text="طريقة السداد *"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="#2c3e50"
+                            Margin="0,0,0,8" />
+                        <ComboBox x:Name="RepaymentMethodComboBox"
+                            FontSize="14"
+                            Padding="15,12"
+                            Background="#f8f9fa"
+                            BorderThickness="1"
+                            BorderBrush="#dee2e6">
+                            <ComboBoxItem Content="خصم من الراتب" Tag="MonthlyDeduction" />
+                            <ComboBoxItem Content="سداد تقسيط" Tag="Installment" />
+                        </ComboBox>
+                    </StackPanel>
+                </Border>
+
+                <!-- Advance Date -->
+                <Border Background="White" 
+                    CornerRadius="12,12,12,12" 
+                    Padding="20"
+                    Margin="0,0,0,15"
+                    x:Name="AdvanceDateBorder">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" 
+                            Direction="270" 
+                            ShadowDepth="1" 
+                            Opacity="0.03" 
+                            BlurRadius="5" />
+                    </Border.Effect>
+                    
+                    <StackPanel>
+                        <TextBlock Text="تاريخ السلفية *"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="#2c3e50"
+                            Margin="0,0,0,8" />
+                        <DatePicker x:Name="AdvanceDatePicker"
+                            FontSize="14"
+                            Padding="15,12"
+                            Background="#f8f9fa"
+                            BorderThickness="1"
+                            BorderBrush="#dee2e6" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Notes -->
+                <Border Background="White" 
+                    CornerRadius="12,12,12,12" 
+                    Padding="20"
+                    Margin="0,0,0,15">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" 
+                            Direction="270" 
+                            ShadowDepth="1" 
+                            Opacity="0.03" 
+                            BlurRadius="5" />
+                    </Border.Effect>
+                    
+                    <StackPanel>
+                        <TextBlock Text="ملاحظات"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="#2c3e50"
+                            Margin="0,0,0,8" />
+                        <TextBox x:Name="NotesTextBox"
+                            Text=""
+                            FontSize="14"
+                            Padding="15,12"
+                            Background="#f8f9fa"
+                            BorderThickness="1"
+                            BorderBrush="#dee2e6"
+                            TextWrapping="Wrap"
+                            AcceptsReturn="True"
+                            Height="80" />
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer Buttons -->
+        <Border Grid.Row="2" 
+            Background="White" 
+            CornerRadius="15,15,0,0" 
+            Padding="25,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" 
+                    Direction="270" 
+                    ShadowDepth="2" 
+                    Opacity="0.05" 
+                    BlurRadius="10" />
+            </Border.Effect>
+            
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="إلغاء"
+                    Click="CancelButton_Click"
+                    Background="#6c757d"
+                    Foreground="White"
+                    Padding="30,12"
+                    Margin="0,0,10,0"
+                    BorderThickness="0"
+                    FontWeight="SemiBold"
+                    FontSize="14"
+                    Width="120">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Margin="{TemplateBinding Padding}" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                
+                <Button Content="حفظ"
+                    Click="SaveButton_Click"
+                    Background="#01922a"
+                    Foreground="White"
+                    Padding="30,12"
+                    BorderThickness="0"
+                    FontWeight="SemiBold"
+                    FontSize="14"
+                    Width="120">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Margin="{TemplateBinding Padding}" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

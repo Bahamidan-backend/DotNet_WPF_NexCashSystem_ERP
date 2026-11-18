@@ -1,0 +1,36 @@
+{
+  "stryker-config": {
+    "project": "POSSystem.WPF.csproj",
+    "test-projects": [
+      "../POSSystem.Tests/POSSystem.Tests.csproj"
+    ],
+    "mutate": [
+      "Business/Services/CashBoxTransactionService.cs",
+      "Business/Services/FinancialAccountService.cs",
+      "Business/Services/FinancialChannelService.cs",
+      "Business/Services/FinancialEngineService.cs",
+      "Business/Services/OrderService.cs",
+      "Business/Services/ReturnOrderService.cs",
+      "Business/Services/CustomerDebtService.cs",
+      "Business/Services/EmployeeService.cs",
+      "Business/Services/SupplierService.cs",
+      "Business/Services/ExpenseService.cs",
+      "Business/Services/PurchaseService.cs",
+      "Business/Services/PurchaseReturnService.cs",
+      "Business/Services/ShiftService.cs",
+      "Helpers/UnitConversionHelper.cs",
+      "Business/Helpers/PortionSizeHelper.cs"
+    ],
+    "reporters": [
+      "html",
+      "progress",
+      "cleartext"
+    ],
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 0
+    },
+    "concurrency": 4
+  }
+}

@@ -1,0 +1,285 @@
+<UserControl x:Class="POSSystem.WPF.Views.Popups.AddProductControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" Background="Transparent" FlowDirection="RightToLeft" Width="600" Height="700">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#f8f9fa" CornerRadius="16" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions><!-- Header -->
+            <Border Grid.Row="0" Background="White" Padding="25,20" BorderBrush="#e9ecef" BorderThickness="0,0,0,1">
+                <StackPanel>
+                    <TextBlock Text="➕ إضافة منتج جديد" FontSize="20" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                    <TextBlock Text="أدخل تفاصيل المنتج الجديد" FontSize="14" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border><!-- Form Content -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="25">
+                <StackPanel><!-- Product Image Section -->
+                    <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="🖼️ صورة المنتج" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+                            <Border Background="#f8f9fa" Width="120" Height="120" HorizontalAlignment="Center" CornerRadius="8" BorderBrush="#dee2e6" BorderThickness="1" ClipToBounds="True">
+                                <Grid>
+                                    <Image x:Name="ProductImagePreview" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                    <StackPanel x:Name="NoImagePlaceholder" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="🖼️" FontSize="32" HorizontalAlignment="Center" Foreground="#adb5bd"/>
+                                        <TextBlock Text="لا توجد صورة" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                                <Button Content="📁 اختيار صورة" Background="#00358c" Foreground="White" Padding="15,8" BorderThickness="0" FontSize="13" Margin="0,0,10,0" Click="SelectImageButton_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Content="🗑️ إزالة الصورة" Background="#dc3545" Foreground="White" Padding="15,8" BorderThickness="0" FontSize="13" Click="RemoveImageButton_Click">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="6">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border><!-- Basic Information -->
+                    <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="📝 المعلومات الأساسية" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,15"/><!-- Product Name -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="اسم المنتج *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox x:Name="NameTextBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel><!-- Description -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="الوصف" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox x:Name="DescriptionTextBox" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Height="80"/>
+                            </StackPanel>
+
+                            <!-- Category -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="اختر فئة *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox Grid.Column="0" x:Name="CategoryDrobDaown" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" DisplayMemberPath="Name" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="10" FontSize="14" SelectionChanged="CategoryComboBox_SelectionChanged" Height="40" Margin="0,0,5,0">
+                                        <ComboBox.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="8"/>
+                                            </Style>
+                                        </ComboBox.Resources>
+                                    </ComboBox>
+                                    <Button Grid.Column="1" Content="➕" Click="ManageCategoriesButton_Click" Width="40" Height="40" Background="#00358c" Foreground="White" BorderThickness="0" ToolTip="إدارة الفئات">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Kitchen Selection (Note 1: Moved from Categories to Product Add/Edit) -->
+                            <StackPanel Margin="0,0,0,10">
+                                <TextBlock Text="اختر المطبخ (لتوجيه طباعة الطلب)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ComboBox Grid.Column="0" x:Name="KitchenComboBox" ItemsSource="{Binding Kitchens}" SelectedItem="{Binding SelectedKitchen}" DisplayMemberPath="Name" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="10" FontSize="14" Height="40" Margin="0,0,5,0" DropDownOpened="KitchenComboBox_DropDownOpened">
+                                        <ComboBox.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="8"/>
+                                            </Style>
+                                        </ComboBox.Resources>
+                                    </ComboBox>
+                                    <Button Grid.Column="1" Content="➕" Click="AddKitchenButton_Click" Width="40" Height="40" Background="#28a745" Foreground="White" BorderThickness="0" ToolTip="إضافة مطبخ سريع">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+
+                            <!-- Quick Add Kitchen Inline -->
+                            <Border x:Name="QuickAddKitchenBorder" Visibility="Collapsed" Background="#f1f3f5" CornerRadius="12" Padding="15" Margin="0,0,0,10" BorderBrush="#dee2e6" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="🔨 إضافة مطبخ سريع" FontWeight="Bold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+                                    <TextBlock Text="اسم المطبخ *" FontSize="12" Foreground="#495057" Margin="0,0,0,4"/>
+                                    <TextBox x:Name="QuickKitchenNameTextBox" Style="{StaticResource ModernTextBoxStyle}" Height="35" Margin="0,0,0,8"/>
+                                    <TextBlock Text="اسم الطابعة *" FontSize="12" Foreground="#495057" Margin="0,0,0,4"/>
+                                    <TextBox x:Name="QuickPrinterNameTextBox" Style="{StaticResource ModernTextBoxStyle}" Height="35" Margin="0,0,0,12"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <Button Content="إلغاء" Background="Transparent" Foreground="#6c757d" BorderThickness="0" Margin="0,0,15,0" Cursor="Hand" Click="CancelQuickAddKitchen_Click"/>
+                                        <Button Content="حفظ المطبخ" Background="#28a745" Foreground="White" Padding="15,5" Height="34" BorderThickness="0" FontWeight="SemiBold" Click="SaveQuickAddKitchen_Click"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Pricing and Inventory -->
+                    <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="💰 التسعير والمخزون" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,12"/>
+                            <Border Background="#f0fdf4" BorderBrush="#bbf7d0" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,15">
+                                <CheckBox x:Name="UntrackedStockCheckBox" Content="منتج بدون ارتباط بالمخزن / كمية مفتوحة (مثل الإيدامات والسلطات)" FontSize="13.5" FontWeight="SemiBold" Foreground="#166534" Checked="UntrackedStockCheckBox_Changed" Unchecked="UntrackedStockCheckBox_Changed"/>
+                            </Border>
+                            <Grid Margin="0,0,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions><!-- Price (Base) -->
+                                <StackPanel Grid.Column="0" Visibility="{Binding IsBasePriceVisible, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="السعر الأساسي *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox x:Name="PriceTextBox" Text="{Binding Price, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                                </StackPanel>
+                                
+                                <!-- Haba Pricing: حبة / نص حبة / ربع حبة -->
+                                <StackPanel Grid.Column="0" Visibility="{Binding IsHabaVisible, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="سعر الحبة" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceHaba, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                    <TextBlock Text="سعر نص حبة" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceNusHaba, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                    <TextBlock Text="سعر ربع حبة" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceRobHaba, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                                </StackPanel>
+
+                                <!-- Nafar Pricing: نفر / نص نفر / نفر ونص -->
+                                <StackPanel Grid.Column="0" Visibility="{Binding IsNafarVisible, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock x:Name="NafarLabel1" Text="سعر النفر" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceNafar, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                    <TextBlock x:Name="NafarLabel2" Text="سعر نص نفر" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceNusNafar, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                    <TextBlock x:Name="NafarLabel3" Text="سعر نفر ونص" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceRobNafar, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                                </StackPanel>
+
+                                <!-- Kabeer Pricing -->
+                                <StackPanel Grid.Column="0" Visibility="{Binding IsKabeerVisible, Converter={StaticResource BoolToVis}}">
+                                    <TextBlock Text="سعر الكبير" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceKabeer, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                    <TextBlock Text="سعر الوسط" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceWasat, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                    <TextBlock Text="سعر الصغير" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <TextBox Text="{Binding PriceSagheer, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                                </StackPanel>
+                                <!-- Unit -->
+                                <StackPanel x:Name="UnitSelectionPanel" Grid.Column="2">
+                                    <TextBlock Text="وحدة القياس *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                    <ComboBox x:Name="InvontryTypeComb" DisplayMemberPath="Value" SelectedValuePath="Key" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="10" FontSize="14" SelectionChanged="SelectPortsUnitButton_Click" Height="40">
+                                        <ComboBox.Resources>
+                                            <Style TargetType="Border">
+                                                <Setter Property="CornerRadius" Value="8"/>
+                                            </Style>
+                                        </ComboBox.Resources>
+                                    </ComboBox>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer><!-- Action Buttons -->
+            <Border Grid.Row="2" Background="White" Padding="25,20" BorderBrush="#e9ecef" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions><!-- Cancel Button -->
+                    <Button Grid.Column="0" Content="❌ إلغاء" Background="#f8f9fa" Foreground="#495057" Padding="10" Height="50" BorderThickness="1" BorderBrush="#dee2e6" FontWeight="Bold" FontSize="16" Click="CancelButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#e9ecef"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button><!-- Save Button -->
+                    <Button Grid.Column="2" Content="✅ حفظ المنتج" Background="#00358c" Foreground="White" Padding="10" Height="50" BorderThickness="0" FontWeight="Bold" FontSize="16" Click="SaveButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <Border.Effect>
+                                                    <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="2" Opacity="0.2" BlurRadius="5"/>
+                                                </Border.Effect>
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#1a4b9c"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

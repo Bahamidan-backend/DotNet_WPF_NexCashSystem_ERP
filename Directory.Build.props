@@ -1,0 +1,7 @@
+<Project>
+  <PropertyGroup>
+    <!-- Ensure Roslyn compiler treats all source files as UTF-8 (CodePage 65001) -->
+    <CodePage>65001</CodePage>
+  </PropertyGroup>
+</Project>
+

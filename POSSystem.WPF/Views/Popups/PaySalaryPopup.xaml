@@ -1,0 +1,162 @@
+<Window x:Class="POSSystem.WPF.Views.Popups.PaySalaryPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="صرف راتب الموظف وتحديد جهة الصرف"
+        Width="520"
+        Height="640"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#f8f9fa"
+        FlowDirection="RightToLeft">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml" />
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" CornerRadius="0,0,15,15" Padding="24,18" Margin="0,0,0,15">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10" />
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock x:Name="TitleTextBlock" Text="💵 صرف راتب الموظف" FontSize="22" FontWeight="Bold" Foreground="#00358c" HorizontalAlignment="Center" />
+                <TextBlock Text="اختر جهة الصرف (نقداً من الصندوق أو من إحدى المحافظ والبنوك)" FontSize="13" Foreground="#64748b" HorizontalAlignment="Center" Margin="0,4,0,0" />
+            </StackPanel>
+        </Border>
+
+        <!-- Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="22,0,22,0">
+            <StackPanel>
+                <!-- Employee & Salary Summary Card -->
+                <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e2e8f0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock x:Name="EmployeeNameTextBlock" Text="الموظف: -" FontSize="15" FontWeight="Bold" Foreground="#0f172a" Margin="0,0,0,10" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#f8fafc" CornerRadius="8" Padding="10,8" Margin="0,0,6,0">
+                                <StackPanel>
+                                    <TextBlock Text="الراتب الأساسي" FontSize="11.5" Foreground="#64748b" />
+                                    <TextBlock x:Name="BaseSalaryTextBlock" Text="0 ريال" FontSize="14" FontWeight="Bold" Foreground="#1e293b" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#fef2f2" CornerRadius="8" Padding="10,8" Margin="3,0">
+                                <StackPanel>
+                                    <TextBlock Text="خصم السلفيات" FontSize="11.5" Foreground="#991b1b" />
+                                    <TextBlock x:Name="AdvanceDeductionTextBlock" Text="0 ريال" FontSize="14" FontWeight="Bold" Foreground="#dc2626" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Background="#f0fdf4" CornerRadius="8" Padding="10,8" Margin="6,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="صافي المستحق للصرف" FontSize="11.5" Foreground="#166534" />
+                                    <TextBlock x:Name="NetSalaryTextBlock" Text="0 ريال" FontSize="15" FontWeight="Bold" Foreground="#15803d" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Payout Channel Selection -->
+                <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e2e8f0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="اختر جهة صرف الراتب (الصندوق أو المحفظة) *" FontSize="14" FontWeight="Bold" Foreground="#1e293b" Margin="0,0,0,8" />
+                        <ComboBox x:Name="PayoutChannelComboBox"
+                                  FontSize="13.5"
+                                  FontWeight="SemiBold"
+                                  Padding="14,10"
+                                  Background="#f8fafc"
+                                  BorderThickness="1"
+                                  BorderBrush="#cbd5e1"
+                                  DisplayMemberPath="DisplayText"
+                                  SelectedValuePath="ChannelTag"
+                                  SelectionChanged="PayoutChannelComboBox_SelectionChanged" />
+
+                        <!-- Live Available Balance Banner -->
+                        <Border x:Name="AvailableBalanceBorder" Background="#f0fdf4" BorderBrush="#86efac" BorderThickness="1.5" CornerRadius="10" Padding="14,10" Margin="0,12,0,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock x:Name="AvailableBalanceIcon" Text="💳" FontSize="15" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="AvailableBalanceLabel" Text="الرصيد المتاح في جهة الصرف:" FontSize="13" FontWeight="SemiBold" Foreground="#166534" VerticalAlignment="Center"/>
+                                </StackPanel>
+                                <TextBlock x:Name="AvailableBalanceTextBlock" Grid.Column="2" Text="جاري التحميل..." FontSize="14" FontWeight="Bold" Foreground="#15803d" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- Target Shift Selector (Visible only when Cash is selected) -->
+                <Border x:Name="TargetShiftBorder" Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e2e8f0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="صندوق المناوبة للكاشير *" FontSize="14" FontWeight="SemiBold" Foreground="#1e293b" Margin="0,0,0,8" />
+                        <ComboBox x:Name="TargetShiftComboBox"
+                                  FontSize="13.5"
+                                  Padding="14,10"
+                                  Background="#f8fafc"
+                                  BorderThickness="1"
+                                  BorderBrush="#cbd5e1"
+                                  DisplayMemberPath="DisplayText"
+                                  SelectedValuePath="ShiftId"
+                                  SelectionChanged="TargetShiftComboBox_SelectionChanged" />
+                        <TextBlock x:Name="DrawerBalanceHintTextBlock"
+                                   Text="يتم خصم صافي الراتب مباشرة من رصيد الصندوق للمناوبة المحددة."
+                                   FontSize="12"
+                                   Foreground="#64748b"
+                                   Margin="0,6,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Optional Reference / Notes -->
+                <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,12" BorderBrush="#e2e8f0" BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="رقم الحوالة / المرجع أو ملاحظات إضافية (اختياري)" FontSize="13.5" FontWeight="SemiBold" Foreground="#1e293b" Margin="0,0,0,6" />
+                        <TextBox x:Name="NotesTextBox"
+                                 FontSize="13"
+                                 Padding="12,8"
+                                 Background="#f8fafc"
+                                 BorderThickness="1"
+                                 BorderBrush="#cbd5e1" />
+                        <TextBlock Text="📌 سيتم قيد عملية الصرف تلقائياً في (حساب رواتب وموظفين) ضمن كشف وجرد حسابات المصروفات."
+                                   FontSize="11.5"
+                                   FontWeight="SemiBold"
+                                   Foreground="#0284c7"
+                                   Margin="0,8,0,0"
+                                   TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Action Buttons -->
+        <Border Grid.Row="2" Background="White" Padding="22,16" BorderBrush="#e2e8f0" BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="12" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Content="✅ تأكيد وصرف الراتب" Click="ConfirmPayButton_Click" Style="{StaticResource SuccessButtonStyle}" Padding="15,12" FontSize="14" FontWeight="Bold" Cursor="Hand" />
+                <Button Grid.Column="2" Content="✖ إلغاء" Click="CancelButton_Click" Background="#64748b" Foreground="White" BorderThickness="0" Padding="15,12" FontSize="14" FontWeight="SemiBold" Cursor="Hand" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

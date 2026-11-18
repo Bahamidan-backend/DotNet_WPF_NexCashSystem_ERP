@@ -1,0 +1,163 @@
+<Window x:Class="POSSystem.WPF.Views.Popups.EditEmployeePopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="تعديل بيانات وصلاحيات موظف"
+        Width="720" Height="780"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="#f8f9fa"
+        FlowDirection="RightToLeft">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" CornerRadius="0,0,15,15" Padding="25,18" Margin="0,0,0,15">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="✏️ تعديل بيانات وصلاحيات الموظف" FontSize="22" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                <TextBlock Text="تحديث البيانات الوظيفية وتخصيص الصلاحيات المسموحة للموظف" FontSize="13" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Form Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="25,0,25,0">
+            <StackPanel>
+                <!-- Name & Phone -->
+                <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="الاسم *" FontSize="13" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,6"/>
+                            <TextBox x:Name="NameTextBox" FontSize="14" Padding="12,10" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="الهاتف *" FontSize="13" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,6"/>
+                            <TextBox x:Name="PhoneTextBox" FontSize="14" Padding="12,10" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Email & Password -->
+                <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="15"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="البريد الإلكتروني / اسم الدخول (اختياري)" FontSize="13" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,6"/>
+                            <TextBox x:Name="EmailTextBox" FontSize="14" Padding="12,10" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="كلمة المرور (اتركها فارغة للإبقاء على الحالية)" FontSize="13" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,6"/>
+                            <PasswordBox x:Name="PasswordBox" FontSize="14" Padding="12,10" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Job Title, Salary, Hire Date -->
+                <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,12">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="المسمى الوظيفي *" FontSize="13" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,6"/>
+                            <ComboBox x:Name="JobTitleComboBox" IsEditable="True" FontSize="13" Padding="10,8" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6">
+                                <ComboBoxItem Content="كاشير"/>
+                                <ComboBoxItem Content="محاسب"/>
+                                <ComboBoxItem Content="مسؤول مخزون"/>
+                                <ComboBoxItem Content="مسؤول مشتريات"/>
+                                <ComboBoxItem Content="مدير فرع"/>
+                                <ComboBoxItem Content="طباخ"/>
+                                <ComboBoxItem Content="توصيل"/>
+                                <ComboBoxItem Content="مباشر"/>
+                                <ComboBoxItem Content="عامل نظافة"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="الراتب الأساسي *" FontSize="13" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,6"/>
+                            <TextBox x:Name="BaseSalaryTextBox" Text="0" FontSize="14" Padding="10,8" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6" TextChanged="BaseSalaryTextBox_TextChanged"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="4">
+                            <TextBlock Text="تاريخ التعيين *" FontSize="13" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,6"/>
+                            <DatePicker x:Name="HireDatePicker" FontSize="13" Padding="8,6" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Status (Active/Inactive) -->
+                <Border Background="White" CornerRadius="12" Padding="16" Margin="0,0,0,12">
+                    <CheckBox x:Name="IsActiveCheckBox" Content="الموظف نشط (يعمل ويُسمح له بالدخول)" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" VerticalContentAlignment="Center"/>
+                </Border>
+
+                <!-- Feature 4: Granular Permissions & Role Templates -->
+                <Border x:Name="PermissionsSectionBorder" Background="White" CornerRadius="12" BorderBrush="#bfdbfe" BorderThickness="1" Padding="20" Margin="0,0,0,15">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="🔐 إدارة الصلاحيات وقوالب الأدوار الوظيفية" FontSize="16" FontWeight="Bold" Foreground="#00358c"/>
+                                <TextBlock x:Name="PermissionsSubtitleText" Text="حدد الدور الوظيفي أو عدّل الصلاحيات التفصيلية لهذا الموظف" FontSize="12" Foreground="#64748b" Margin="0,2,0,0"/>
+                            </StackPanel>
+                            <StackPanel x:Name="QuickSelectButtonsPanel" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="تحديد الكل" Click="SelectAllPermissions_Click" Background="#e0f2fe" Foreground="#0369a1" BorderThickness="0" Padding="10,6" Margin="0,0,6,0" FontSize="12" FontWeight="Bold" Cursor="Hand"/>
+                                <Button Content="إلغاء الكل" Click="ClearAllPermissions_Click" Background="#fee2e2" Foreground="#b91c1c" BorderThickness="0" Padding="10,6" FontSize="12" FontWeight="Bold" Cursor="Hand"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="240"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="قالب الدور الجاهز:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,10,0"/>
+                            <ComboBox x:Name="RoleTemplateComboBox" Grid.Column="1" Height="36" FontSize="13" SelectionChanged="RoleTemplateComboBox_SelectionChanged"/>
+                        </Grid>
+
+                        <Border Background="#f8fafc" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8" Padding="12" MaxHeight="260">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <StackPanel x:Name="PermissionsContainerPanel"/>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Footer Buttons -->
+        <Border Grid.Row="2" Background="White" CornerRadius="15,15,0,0" Padding="25,16">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="إلغاء" Click="CancelButton_Click" Background="#6c757d" Foreground="White" Padding="30,10" Margin="0,0,10,0" BorderThickness="0" FontWeight="SemiBold" FontSize="14" Width="120"/>
+                <Button Content="حفظ التعديلات والصلاحيات" Click="SaveButton_Click" Background="#00358c" Foreground="White" Padding="30,10" BorderThickness="0" FontWeight="Bold" FontSize="14" Width="210"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,471 @@
+<UserControl x:Class="POSSystem.WPF.Views.Components.AdminSidebar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="800"
+             d:DesignWidth="280">
+
+    <UserControl.Resources>
+
+        <ResourceDictionary>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Navigation Button Style -->
+            <Style x:Key="NavigationButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="Padding" Value="20,15"/>
+                <Setter Property="Height" Value="48"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Cursor" Value="Hand"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="12"
+                                    Margin="10,2">
+
+                                <ContentPresenter HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  Margin="15,0"/>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border"
+                                            Property="Background"
+                                            Value="#1AFFFFFF"/>
+
+                                    <Setter Property="FontWeight"
+                                            Value="SemiBold"/>
+                                </Trigger>
+
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Border"
+                                            Property="Background"
+                                            Value="#33FFFFFF"/>
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Active Navigation Button Style -->
+            <Style x:Key="ActiveNavigationButtonStyle"
+                   TargetType="Button"
+                   BasedOn="{StaticResource NavigationButtonStyle}">
+
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="Foreground" Value="#00358c"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+
+                            <Border x:Name="Border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="12"
+                                    Margin="10,2">
+
+                                <ContentPresenter HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  Margin="15,0"/>
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border"
+                                            Property="Background"
+                                            Value="#F0F0F0"/>
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Section Title Style -->
+            <Style x:Key="SectionTitleStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="#BFD3FF"/>
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Margin" Value="22,18,0,8"/>
+            </Style>
+
+            <!-- Thin ScrollBar Style -->
+            <Style x:Key="ThinScrollBarStyle" TargetType="ScrollBar">
+
+                <Setter Property="Width" Value="5"/>
+                <Setter Property="Background" Value="Transparent"/>
+
+                <Setter Property="Template">
+                    <Setter.Value>
+
+                        <ControlTemplate TargetType="ScrollBar">
+
+                            <Grid Width="5"
+                                  Background="Transparent">
+
+                                <Track x:Name="PART_Track"
+                                       IsDirectionReversed="True"
+                                       Focusable="False">
+
+                                    <Track.Thumb>
+
+                                        <Thumb>
+
+                                            <Thumb.Template>
+
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Border Background="#60FFFFFF"
+                                                            CornerRadius="2"/>
+                                                </ControlTemplate>
+
+                                            </Thumb.Template>
+
+                                        </Thumb>
+
+                                    </Track.Thumb>
+
+                                </Track>
+
+                            </Grid>
+
+                        </ControlTemplate>
+
+                    </Setter.Value>
+                </Setter>
+
+            </Style>
+
+        </ResourceDictionary>
+
+    </UserControl.Resources>
+
+    <Border Background="#00358c">
+
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <StackPanel Grid.Row="0"
+                        Margin="0,30,0,25">
+
+                <Image Source="pack://application:,,,/POSSystem.WPF;component/Assets/NexCashLogo.png"
+                       Height="60"
+                       Margin="0,0,0,15"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                <TextBlock Text="{Binding WelcomeMessage}"
+                           FontSize="14"
+                           HorizontalAlignment="Center"
+                           Margin="0,5,0,0"
+                           Foreground="White"
+                           FontWeight="SemiBold"/>
+
+                <Border Background="#33FFFFFF"
+                        CornerRadius="10"
+                        Padding="10,4"
+                        HorizontalAlignment="Center"
+                        Margin="0,8,0,0">
+
+                    <TextBlock x:Name="RoleBadgeText"
+                               Text="Admin"
+                               FontSize="12"
+                               Foreground="White"
+                               FontWeight="Bold"/>
+
+                </Border>
+
+                <!-- Switch to Cashier Button (if user has cashier permission) -->
+                <Button x:Name="OpenCashierModeButton"
+                        Content="🖥️ فتح شاشة الكاشير"
+                        Visibility="Collapsed"
+                        Click="OpenCashierModeButton_Click"
+                        Margin="20,10,20,0"
+                        Height="34"
+                        Background="#1AFFFFFF"
+                        Foreground="#E0F2FE"
+                        BorderThickness="1"
+                        BorderBrush="#40FFFFFF"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Cursor="Hand"/>
+
+            </StackPanel>
+
+            <!-- Navigation -->
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto">
+
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar"
+                           BasedOn="{StaticResource ThinScrollBarStyle}"/>
+                </ScrollViewer.Resources>
+
+                <StackPanel x:Name="NavStackPanel" Margin="0,10">
+
+                    <!-- MAIN -->
+                    <TextBlock x:Name="MainSectionHeader"
+                               Text="الرئيسية"
+                               Style="{StaticResource SectionTitleStyle}"/>
+
+                    <Button x:Name="DashboardButton"
+                            Content="🏠 لوحة التحكم"
+                            Command="{Binding adminDashboardCommand.NavigateToDashboardCommand}"
+                            Style="{StaticResource ActiveNavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="Dashboard"/>
+
+                    <!-- PRODUCTS -->
+                    <TextBlock x:Name="ProductsSectionHeader"
+                               Text="المنتجات والمخزون"
+                               Style="{StaticResource SectionTitleStyle}"/>
+
+                    <Button x:Name="ProductsButton"
+                            Content="📦 إدارة المنتجات"
+                            Command="{Binding adminDashboardCommand.NavigateToProductsCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="Products"/>
+
+                    <Button x:Name="InventoryButton"
+                            Content="🏪 إدارة المخزون"
+                            Command="{Binding adminDashboardCommand.NavigateToInventoryCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="Inventory"/>
+
+                    <Button x:Name="AddonManagementButton"
+                            Visibility="Collapsed"
+                            Content="🛠️ إدارة الإضافات"
+                            Command="{Binding adminDashboardCommand.NavigateToAddonManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="AddonManagement"/>
+
+                    <Button x:Name="DiscountsButton"
+                            Content="💰 إدارة الخصومات"
+                            Command="{Binding adminDashboardCommand.NavigateToDiscountsCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="Discounts"/>
+
+                    <!-- SALES -->
+                    <TextBlock x:Name="SalesSectionHeader"
+                               Text="المبيعات والطلبات"
+                               Style="{StaticResource SectionTitleStyle}"/>
+
+                    <Button x:Name="PurchaseManagementButton"
+                            Content="🛒 إدارة المشتريات"
+                            Command="{Binding adminDashboardCommand.NavigateToPurchaseManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="PurchaseManagement"/>
+
+                    <Button x:Name="SalesManagementButton"
+                            Content="📊 إدارة المبيعات"
+                            Command="{Binding adminDashboardCommand.NavigateToSalesManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="SalesManagement"/>
+
+                    <Button x:Name="ReturnsManagementButton"
+                            Content="🔙 إدارة المرتجعات"
+                            Command="{Binding adminDashboardCommand.NavigateToReturnsManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="ReturnsManagement"/>
+
+                    <!-- USERS -->
+                    <TextBlock x:Name="UsersSectionHeader"
+                               Text="العملاء والموظفين"
+                               Style="{StaticResource SectionTitleStyle}"/>
+
+                    <Button x:Name="CustomerManagementButton"
+                            Content="👥 إدارة العملاء"
+                            Command="{Binding adminDashboardCommand.NavigateToCustomerManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="CustomerManagement"/>
+
+                    <Button x:Name="EmployeeManagementButton"
+                            Content="👨‍💼 إدارة الموظفين"
+                            Command="{Binding adminDashboardCommand.NavigateToEmployeeManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="EmployeeManagement"/>
+
+                    <Button x:Name="CashierManagementButton"
+                            Content="💳 إدارة الكاشير"
+                            Command="{Binding adminDashboardCommand.NavigateToCashierManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="CashierManagement"/>
+
+                    <Button x:Name="KitchenManagementButton"
+                            Content="👨‍🍳 إدارة المطابخ"
+                            Command="{Binding adminDashboardCommand.NavigateToKitchenManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="KitchenManagement"/>
+
+                    <!-- REPORTS -->
+                    <TextBlock x:Name="ReportsSectionHeader"
+                               Text="التقارير والمالية"
+                               Style="{StaticResource SectionTitleStyle}"/>
+
+                    <Button x:Name="FinancialAccountsButton"
+                            Content="🏦 الحسابات والمحافظ والبنوك"
+                            Command="{Binding adminDashboardCommand.NavigateToFinancialAccountsCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="FinancialAccounts"/>
+
+                    <Button x:Name="ExpenseManagementButton"
+                            Content="💵 إدارة المصروفات"
+                            Command="{Binding adminDashboardCommand.NavigateToExpenseManagementCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="ExpenseManagement"/>
+
+                    <Button x:Name="FinancialOverviewButton"
+                            Content="📊 التقارير المالية"
+                            Command="{Binding adminDashboardCommand.NavigateToFinancialOverviewCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="FinancialOverview"/>
+
+                    <Button x:Name="MonthlyReportsButton"
+                            Content="📑 التقارير العامة"
+                            Command="{Binding adminDashboardCommand.NavigateToMonthlyReportsCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="MonthlyReports"/>
+
+                    <!-- SETTINGS -->
+                    <TextBlock x:Name="SettingsSectionHeader"
+                               Text="النظام"
+                               Style="{StaticResource SectionTitleStyle}"/>
+
+                    <Button x:Name="SettingsButton"
+                            Content="⚙️ الإعدادات"
+                            Command="{Binding adminDashboardCommand.NavigateToSettingsCommand}"
+                            Style="{StaticResource NavigationButtonStyle}"
+                            Click="NavigationButton_Click"
+                            Tag="Settings"/>
+
+                </StackPanel>
+
+            </ScrollViewer>
+
+            <!-- Logout -->
+            <Border Grid.Row="2"
+                    Margin="25,10,25,25"
+                    CornerRadius="20">
+
+                <Button Command="{Binding adminDashboardCommand.LogoutCommand}"
+                        Background="White"
+                        Foreground="#dc3545"
+                        BorderThickness="0"
+                        Height="42"
+                        FontWeight="Bold"
+                        FontSize="13"
+                        Cursor="Hand">
+
+                    <Button.Content>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+
+                            <TextBlock Text="🚪"
+                                       Margin="0,0,10,0"/>
+
+                            <TextBlock Text="تسجيل الخروج"/>
+
+                        </StackPanel>
+
+                    </Button.Content>
+
+                    <Button.Resources>
+
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius"
+                                    Value="20"/>
+                        </Style>
+
+                    </Button.Resources>
+
+                    <Button.Template>
+
+                        <ControlTemplate TargetType="Button">
+
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="20">
+
+                                <ContentPresenter HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"/>
+
+                            </Border>
+
+                            <ControlTemplate.Triggers>
+
+                                <Trigger Property="IsMouseOver"
+                                         Value="True">
+
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#F8F9FA"/>
+
+                                </Trigger>
+
+                                <Trigger Property="IsPressed"
+                                         Value="True">
+
+                                    <Setter TargetName="border"
+                                            Property="Background"
+                                            Value="#E9ECEF"/>
+
+                                </Trigger>
+
+                            </ControlTemplate.Triggers>
+
+                        </ControlTemplate>
+
+                    </Button.Template>
+
+                </Button>
+
+            </Border>
+
+        </Grid>
+
+    </Border>
+
+</UserControl>

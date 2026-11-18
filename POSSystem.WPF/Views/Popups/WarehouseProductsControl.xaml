@@ -1,0 +1,163 @@
+﻿<UserControl x:Class="POSSystem.WPF.Views.Popups.WarehouseProductsControl" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:POSSystem.WPF.Converters" 
+             mc:Ignorable="d" 
+             Width="920" Height="620">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/CommonStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:PortionUnitConverter x:Key="PortionUnitConverter"/>
+            <converters:StockStatusToColorConverter x:Key="StockStatusToColorConverter"/>
+
+            <!-- Unified Bottom Bar Pill Button Base Style -->
+            <Style x:Key="UnifiedPillButtonStyle" TargetType="Button">
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="FontSize" Value="13.5"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Padding" Value="16,0"/>
+                <Setter Property="Margin" Value="0,0,10,0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Border" 
+                                    Background="{TemplateBinding Background}" 
+                                    CornerRadius="20" 
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.9"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Border" Property="Opacity" Value="0.75"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- 1. إضافة منتج (أزرق غامق / كحلي رئيسي) -->
+            <Style x:Key="AddProductButtonStyle" TargetType="Button" BasedOn="{StaticResource UnifiedPillButtonStyle}">
+                <Setter Property="Background" Value="#00358C"/>
+            </Style>
+
+            <!-- 2. تحويل مخزون (أزرق حيوي) -->
+            <Style x:Key="TransferProductButtonStyle" TargetType="Button" BasedOn="{StaticResource UnifiedPillButtonStyle}">
+                <Setter Property="Background" Value="#3498DB"/>
+            </Style>
+
+            <!-- 3. تسجيل هدر / تالف (أحمر قرمزي / هدر) -->
+            <Style x:Key="WasteProductButtonStyle" TargetType="Button" BasedOn="{StaticResource UnifiedPillButtonStyle}">
+                <Setter Property="Background" Value="#C0392B"/>
+            </Style>
+
+            <!-- 4. سجل الحركات (كحلي رمادي / سجلات) -->
+            <Style x:Key="HistoryProductButtonStyle" TargetType="Button" BasedOn="{StaticResource UnifiedPillButtonStyle}">
+                <Setter Property="Background" Value="#1A5276"/>
+            </Style>
+
+            <!-- 5. حذف المحدد (أحمر ناصع / حذف) -->
+            <Style x:Key="DeleteProductButtonStyle" TargetType="Button" BasedOn="{StaticResource UnifiedPillButtonStyle}">
+                <Setter Property="Background" Value="#E74C3C"/>
+                <Setter Property="Margin" Value="0"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Border Background="White" CornerRadius="16" Margin="20" Padding="0">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Direction="270" ShadowDepth="4" Opacity="0.2" BlurRadius="20"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" Background="#00358c" CornerRadius="16,16,0,0" Padding="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="منتجات المخزن" FontSize="22" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right"/>
+                        <TextBlock Text="Warehouse Products" FontSize="14" Foreground="#AAC4FF" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Click="CloseButton_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" VerticalAlignment="Top" Margin="10,-10,-10,0">
+                        <TextBlock Text="✕" FontSize="18" Foreground="White" FontWeight="Bold"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Products Grid -->
+            <Border Grid.Row="1" Background="White" Margin="20" CornerRadius="8" BorderBrush="#EEEEEE" BorderThickness="1">
+                <DataGrid x:Name="ProductsDataGrid" Style="{x:Null}" CellEditEnding="ProductsDataGrid_CellEditEnding" AutoGenerateColumns="False" CanUserAddRows="False" AlternatingRowBackground="#F8F9FA" IsReadOnly="False" FontSize="14" SelectionMode="Extended" SelectionUnit="FullRow" GridLinesVisibility="Horizontal" HeadersVisibility="Column" Background="White" BorderThickness="0">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="52" CanUserSort="False">
+                            <DataGridTemplateColumn.Header>
+                                <CheckBox x:Name="SelectAllCheckBox" HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="تحديد الكل" Click="SelectAllCheckBox_Click"/>
+                            </DataGridTemplateColumn.Header>
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="رمز المنتج" Binding="{Binding Id}" Width="75" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="اسم المنتج" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="145" IsReadOnly="False"/>
+                        <DataGridTextColumn Header="الكمية" Binding="{Binding StockQuantity, StringFormat=N0}" Width="85" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="الحد الأدنى" Binding="{Binding MinimumStockLevel, StringFormat=N0, UpdateSourceTrigger=PropertyChanged}" Width="85" IsReadOnly="False"/>
+                        <DataGridTextColumn Header="السعر" Binding="{Binding Price, StringFormat=N0}" Width="90" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="القيمة الإجمالية" Width="105" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding TotalValue, StringFormat=N0}" FontWeight="Bold" Foreground="#00358c" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="الحالة" Width="95" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding StockStatus}" Foreground="{Binding StockStatus, Converter={StaticResource StockStatusToColorConverter}}" FontWeight="Bold"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="وحدة القياس" Binding="{Binding PortionUnit, Converter={StaticResource PortionUnitConverter}}" Width="90" IsReadOnly="True"/>
+                        <DataGridTemplateColumn Header="تعديل" Width="75" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="✏️ تعديل" Click="EditRowProductButton_Click" Tag="{Binding}" Background="#0284c7" Foreground="White" FontSize="11" FontWeight="SemiBold" Padding="8,4" BorderThickness="0" Cursor="Hand"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- Buttons - Unified Pill Shape Bar -->
+            <Border Grid.Row="2" Background="#F8F9FA" CornerRadius="0,0,16,16" Padding="20" BorderBrush="#EEEEEE" BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button Content="➕ إضافة منتج" Style="{StaticResource AddProductButtonStyle}" Click="AddProductButton_Click"/>
+                    <Button Content="✏️ تعديل المحدد" Style="{StaticResource TransferProductButtonStyle}" Background="#0284c7" Click="EditProductButton_Click"/>
+                    <Button Content="🔄 تحويل مخزون" Style="{StaticResource TransferProductButtonStyle}" Click="TransferProductButton_Click"/>
+                    <Button Content="⚠️ تسجيل هدر / تالف" Style="{StaticResource WasteProductButtonStyle}" Click="RecordWasteButton_Click"/>
+                    <Button Content="📜 سجل الحركات" Style="{StaticResource HistoryProductButtonStyle}" Click="ViewHistoryButton_Click"/>
+                    <Button Content="🗑️ حذف المحدد" Style="{StaticResource DeleteProductButtonStyle}" Click="DeleteProductButton_Click"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

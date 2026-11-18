@@ -1,0 +1,272 @@
+﻿<Window x:Class="POSSystem.WPF.Views.Popups.DepositPaymentPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="تفاصيل الإيداع" Height="650" Width="520"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FlowDirection="RightToLeft">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml" />
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border Background="White" 
+            CornerRadius="16" 
+            BorderBrush="#dee2e6" 
+            BorderThickness="1"
+            Margin="10">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="6" Opacity="0.18" BlurRadius="16" />
+        </Border.Effect>
+        
+        <Grid Margin="22">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Header -->
+                <RowDefinition Height="Auto"/> <!-- Order Total Banner -->
+                <RowDefinition Height="*"/>    <!-- Form Fields ScrollViewer -->
+                <RowDefinition Height="Auto"/> <!-- Action Buttons -->
+            </Grid.RowDefinitions>
+
+            <!-- 1. Header -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="💳" FontSize="24" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="تسجيل تفاصيل الإيداع والمحفظة" 
+                               FontSize="19"
+                               FontWeight="Bold"
+                               Foreground="#00358c"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Text="اختر المحفظة الإلكترونية أو البنك وحدد العملة والمبلغ" 
+                           FontSize="12" 
+                           Foreground="#6c757d" 
+                           HorizontalAlignment="Center" 
+                           Margin="0,4,0,0"/>
+            </StackPanel>
+
+            <!-- 2. Order Total Banner -->
+            <Border Grid.Row="1" Background="#e8f5e9" CornerRadius="10" Padding="14,9" Margin="0,0,0,12" BorderBrush="#c8e6c9" BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Text="إجمالي الفاتورة المطلوب:" FontSize="13" Foreground="#2e7d32" VerticalAlignment="Center" FontWeight="Medium"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock x:Name="OrderTotalTextBlock" Text="0.00" FontSize="18" FontWeight="Bold" Foreground="#1b5e20" VerticalAlignment="Center"/>
+                        <TextBlock Text=" ريال" FontSize="13" FontWeight="Bold" Foreground="#2e7d32" VerticalAlignment="Center" Margin="4,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- 3. Form Content -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" Padding="0,0,6,0">
+                <StackPanel>
+                    <!-- Currency Selection -->
+                    <TextBlock Text="عملة الإيداع *" FontSize="13" FontWeight="SemiBold" Foreground="#343a40" Margin="0,0,0,6"/>
+                    <UniformGrid Columns="3" Rows="1" Margin="0,0,0,12">
+                        <Button x:Name="CurrencyYerButton" Content="🇾🇪 ريال يمني" Click="CurrencyButton_Click" Tag="ريال يمني"
+                                Height="40" Margin="0,0,4,0" Cursor="Hand" FontWeight="Bold" FontSize="13"
+                                Background="#28a745" Foreground="White" BorderThickness="0">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        <Button x:Name="CurrencySarButton" Content="🇸🇦 ريال سعودي" Click="CurrencyButton_Click" Tag="ريال سعودي"
+                                Height="40" Margin="2,0,2,0" Cursor="Hand" FontWeight="SemiBold" FontSize="13"
+                                Background="#f8f9fa" Foreground="#495057" BorderBrush="#ced4da" BorderThickness="1">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                        <Button x:Name="CurrencyUsdButton" Content="🇺🇸 دولار" Click="CurrencyButton_Click" Tag="دولار أمريكي"
+                                Height="40" Margin="4,0,0,0" Cursor="Hand" FontWeight="SemiBold" FontSize="13"
+                                Background="#f8f9fa" Foreground="#495057" BorderBrush="#ced4da" BorderThickness="1">
+                            <Button.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </UniformGrid>
+
+                    <!-- Amount Deposited -->
+                    <Grid Margin="0,0,0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="المبلغ المودع *" FontSize="13" FontWeight="SemiBold" Foreground="#343a40" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="CurrencyBadge" Grid.Column="1" Text="ريال يمني" FontSize="12" FontWeight="Bold" Foreground="#28a745" VerticalAlignment="Center"/>
+                    </Grid>
+                    <TextBox x:Name="AmountTextBox"
+                             Padding="12,9"
+                             FontSize="16"
+                             FontWeight="Bold"
+                             Foreground="#2c3e50"
+                             Background="#f8f9fa"
+                             BorderBrush="#ced4da"
+                             BorderThickness="1"
+                             Margin="0,0,0,12"
+                             GotFocus="AmountTextBox_GotFocus"/>
+
+                    <!-- Electronic Wallets Quick Selection -->
+                    <TextBlock Text="المحافظ الإلكترونية (اختيار سريع بنقرة واحدة)" FontSize="13" FontWeight="SemiBold" Foreground="#00358c" Margin="0,0,0,6"/>
+                    <UniformGrid Columns="2" Margin="0,0,0,10">
+                        <Button x:Name="BtnWalletKuraimi" Click="WalletQuickButton_Click" Tag="حاسب كريمي" Margin="0,0,4,6" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💳" Margin="0,0,6,0"/>
+                                <TextBlock Text="حاسب كريمي"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnWalletJeeb" Click="WalletQuickButton_Click" Tag="محفظة جيب" Margin="4,0,0,6" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📱" Margin="0,0,6,0"/>
+                                <TextBlock Text="محفظة جيب"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnWalletFloosak" Click="WalletQuickButton_Click" Tag="محفظة فلوسك" Margin="0,0,4,6" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💰" Margin="0,0,6,0"/>
+                                <TextBlock Text="محفظة فلوسك"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnWalletOneCash" Click="WalletQuickButton_Click" Tag="محفظة ون كاش" Margin="4,0,0,6" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⚡" Margin="0,0,6,0"/>
+                                <TextBlock Text="محفظة ون كاش"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnWalletJawali" Click="WalletQuickButton_Click" Tag="محفظة جوالي" Margin="0,0,4,6" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📲" Margin="0,0,6,0"/>
+                                <TextBlock Text="محفظة جوالي"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnWalletMobileMoney" Click="WalletQuickButton_Click" Tag="محفظة موبايل موني" Margin="4,0,0,6" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="💵" Margin="0,0,6,0"/>
+                                <TextBlock Text="محفظة موبايل موني"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnWalletYemenWallet" Click="WalletQuickButton_Click" Tag="محفظة يمن والت" Margin="0,0,4,0" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🇾🇪" Margin="0,0,6,0"/>
+                                <TextBlock Text="محفظة يمن والت"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="BtnBankTransfer" Click="WalletQuickButton_Click" Tag="ADD_NEW_WALLET" Margin="4,0,0,0" Height="38"
+                                Background="#f0f4ff" Foreground="#00358c" BorderBrush="#c2daf8" BorderThickness="1" Cursor="Hand" FontWeight="SemiBold" FontSize="12">
+                            <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="8"/></Style></Button.Resources>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="➕" Margin="0,0,6,0"/>
+                                <TextBlock Text="إضافة محفظة جديدة"/>
+                            </StackPanel>
+                        </Button>
+                    </UniformGrid>
+
+                    <!-- Bank or Wallet (Selected / Custom) -->
+                    <TextBlock Text="جهة الإيداع المحددة (أو اكتب جهة أخرى)" FontSize="13" Foreground="#495057" Margin="0,0,0,4"/>
+                    <ComboBox x:Name="BankComboBox"
+                              IsEditable="True"
+                              Padding="10,8"
+                              FontSize="13"
+                              Background="#f8f9fa"
+                              BorderBrush="#ced4da"
+                              BorderThickness="1"
+                              Margin="0,0,0,12"
+                              SelectionChanged="BankComboBox_SelectionChanged"
+                              TextBoxBase.TextChanged="BankComboBox_TextChanged">
+                        <ComboBoxItem Content="حاسب كريمي"/>
+                        <ComboBoxItem Content="محفظة جيب"/>
+                        <ComboBoxItem Content="محفظة ون كاش"/>
+                        <ComboBoxItem Content="محفظة جوالي"/>
+                        <ComboBoxItem Content="محفظة فلوسك"/>
+                        <ComboBoxItem Content="قطيبي باي"/>
+                        <ComboBoxItem Content="محفظة موبايل موني"/>
+                        <ComboBoxItem Content="محفظتي (بنك التضامن)"/>
+                        <ComboBoxItem Content="محفظة بيس PYES"/>
+                        <ComboBoxItem Content="محفظة يمن والت"/>
+                        <ComboBoxItem Content="بنك الشامل"/>
+                        <ComboBoxItem Content="بنك البسيري"/>
+                        <ComboBoxItem Content="بنك بن دول"/>
+                        <ComboBoxItem Content="حوالة صرافة"/>
+                    </ComboBox>
+
+                    <!-- Reference Number (Optional) -->
+                    <TextBlock Text="رقم الإشعار / الحوالة / المرجع (اختياري)" FontSize="13" Foreground="#495057" Margin="0,0,0,4"/>
+                    <TextBox x:Name="ReferenceNumberTextBox"
+                             Padding="10,8"
+                             FontSize="13"
+                             Background="#f8f9fa"
+                             BorderBrush="#ced4da"
+                             BorderThickness="1"
+                             Margin="0,0,0,6"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 4. Action Buttons -->
+            <Grid Grid.Row="3" Margin="0,14,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="تأكيد الإيداع"
+                        IsDefault="True"
+                        Click="ConfirmButton_Click"
+                        Background="#28a745" Foreground="White"
+                        BorderThickness="0"
+                        FontSize="15" FontWeight="Bold"
+                        Height="44" Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Grid.Column="2" Content="إلغاء"
+                        IsCancel="True"
+                        Click="CancelButton_Click"
+                        Background="#f8f9fa" Foreground="#6c757d"
+                        BorderBrush="#ced4da" BorderThickness="1"
+                        FontSize="15" FontWeight="SemiBold"
+                        Height="44" Cursor="Hand">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="10"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

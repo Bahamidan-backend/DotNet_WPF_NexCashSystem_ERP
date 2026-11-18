@@ -1,0 +1,421 @@
+<UserControl x:Class="POSSystem.WPF.Views.Popups.KitchenCookingBatchPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             Width="720" MaxHeight="760"
+             FlowDirection="RightToLeft"
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#2c3e50"/>
+        </Style>
+        
+        <Style x:Key="MultiplierButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#f1f5f9"/>
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#cbd5e1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#e2e8f0"/>
+                                <Setter Property="BorderBrush" Value="#00358c"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Background="White" CornerRadius="16" Margin="10">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Direction="270" ShadowDepth="6" Opacity="0.25" BlurRadius="20"/>
+        </Border.Effect>
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" BorderBrush="#f1f5f9" BorderThickness="0,0,0,1" Padding="0,0,0,14" Margin="0,0,0,12">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Background="#e0f2fe" CornerRadius="10" Width="44" Height="44" Margin="0,0,12,0">
+                            <TextBlock Text="🍲" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="تشغيل أمر طبخ القدر وتسوية الإنتاج" FontSize="19" FontWeight="Bold" Foreground="#00358c"/>
+                            <TextBlock Text="بدء طبخ قدر جديد بسحب المواد الخام أو تسوية وفر وزيادة القدر الفعلي دون سحب مخزون إضافي" FontSize="12" Foreground="#64748b" Margin="0,3,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Content="✕" Width="32" Height="32" HorizontalAlignment="Left" Background="#f8fafc" BorderThickness="0" Foreground="#94a3b8" FontSize="14" Cursor="Hand" Click="CloseButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="16">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Mode Selector Tabs (New Pot vs Surplus Settlement) -->
+            <Border Grid.Row="1" Background="#f1f5f9" CornerRadius="10" Padding="4" Margin="0,0,0,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="TabNewCookingBtn" Grid.Column="0" Content="🍲 تشغيل قدر / تحضير جديد" Height="38" Background="#00358c" Foreground="White" BorderThickness="0" FontWeight="Bold" FontSize="13" Cursor="Hand" Click="TabNewCookingBtn_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="TabSurplusSettlementBtn" Grid.Column="2" Content="📈 تسوية وفر وزيادة القدر" Height="38" Background="Transparent" Foreground="#334155" BorderThickness="0" FontWeight="Bold" FontSize="13" Cursor="Hand" Click="TabSurplusSettlementBtn_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Body Panel 1: New Cooking Batch (Raw Material Deduction) -->
+            <ScrollViewer x:Name="NewCookingPanel" Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="0,0,0,14">
+                <StackPanel>
+                    <!-- Select Meal -->
+                    <StackPanel Margin="0,0,0,14">
+                        <TextBlock Text="الوجبة المراد طبخها" FontWeight="SemiBold" FontSize="14" Margin="0,0,0,6" Foreground="#1e293b"/>
+                        <ComboBox x:Name="ProductComboBox" Height="42" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="ProductComboBox_SelectionChanged" FontSize="15" Padding="12,10" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Recipe Standard Info Banner -->
+                    <Border x:Name="StandardInfoBorder" Background="#f0f9ff" BorderBrush="#bae6fd" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,14" Visibility="Collapsed">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="📋 المعيار القياسي للقدر: " FontWeight="Bold" Foreground="#0369a1"/>
+                                <TextBlock x:Name="StandardRecipeText" Text="1 كيس أرز = 120 نفر" Foreground="#0284c7" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <TextBlock x:Name="MainIngredientText" Text="المكون الأساسي: أرز بشاور الشعلان" FontSize="12" Foreground="#0369a1" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Batch Quantity Multipliers -->
+                    <StackPanel Margin="0,0,0,14">
+                        <TextBlock Text="اختر حجم / عدد القدور المراد طبخها:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,8"/>
+                        <WrapPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <Button Content="نصف قدر (0.5)" Style="{StaticResource MultiplierButtonStyle}" Click="MultiplierButton_Click" Tag="0.5"/>
+                            <Button Content="قدر واحد (1.0)" Style="{StaticResource MultiplierButtonStyle}" Click="MultiplierButton_Click" Tag="1.0" Background="#e0f2fe" BorderBrush="#0284c7" Foreground="#0369a1"/>
+                            <Button Content="قدر ونصف (1.5)" Style="{StaticResource MultiplierButtonStyle}" Click="MultiplierButton_Click" Tag="1.5"/>
+                            <Button Content="قدرين (2.0)" Style="{StaticResource MultiplierButtonStyle}" Click="MultiplierButton_Click" Tag="2.0"/>
+                            <Button Content="3 قدور (3.0)" Style="{StaticResource MultiplierButtonStyle}" Click="MultiplierButton_Click" Tag="3.0"/>
+                        </WrapPanel>
+
+                        <!-- Custom Raw Quantity & Portions Row -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="15"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="كمية المكون الأساسي (الأرز/الذبيحة)" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                                <Grid>
+                                    <TextBox x:Name="MainQtyTextBox" Text="1.0" Height="40" FontSize="15" FontWeight="Bold" Padding="10,8" TextAlignment="Center" TextChanged="MainQtyTextBox_TextChanged" Background="White" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                                    <TextBlock x:Name="UnitLabelText" Text="كيس" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Foreground="#64748b" FontWeight="SemiBold"/>
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="عدد الأنفار المستلمة للكاشير" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                                <TextBox x:Name="ActualPortionsTextBox" Text="120" Height="40" FontSize="15" FontWeight="Bold" Padding="10,8" TextAlignment="Center" Foreground="#01922a" Background="White" BorderBrush="#cbd5e1" BorderThickness="1" TextChanged="ActualPortionsTextBox_TextChanged"/>
+                                <TextBlock x:Name="VarianceFeedbackText" Text="مطابق للمعيار القياسي للقدر" FontSize="11" FontWeight="SemiBold" Foreground="#0284c7" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Preview of Consumed Ingredients -->
+                    <StackPanel Margin="0,0,0,14">
+                        <TextBlock Text="المقادير التي ستُسحب من المستودع تلقائياً:" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                        <Border Background="#f8fafc" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="8" Padding="10" MinHeight="80">
+                            <ItemsControl x:Name="IngredientsPreviewItems">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="8,6" BorderBrush="#f1f5f9" BorderThickness="0,0,0,1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                                    <TextBlock Text="• " FontWeight="Bold" Foreground="#00358c"/>
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Medium" Foreground="#334155"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding RequiredDisplay}" FontWeight="Bold" Foreground="#0f172a" Margin="15,0"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding StockStatusDisplay}" FontWeight="SemiBold" Foreground="{Binding StatusBrush}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Notes -->
+                    <StackPanel>
+                        <TextBlock Text="ملاحظات الطبخة (اختياري)" FontSize="12" Foreground="#64748b" Margin="0,0,0,4"/>
+                        <TextBox x:Name="NotesTextBox" Height="35" FontSize="13" Padding="8,6" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Body Panel 2: Surplus Yield Settlement (NO Raw Material Deduction) -->
+            <ScrollViewer x:Name="SurplusSettlementPanel" Grid.Row="2" VerticalScrollBarVisibility="Auto" Margin="0,0,0,14" Visibility="Collapsed">
+                <StackPanel>
+                    <Border Background="#ecfdf5" BorderBrush="#a7f3d0" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,14">
+                        <StackPanel>
+                            <TextBlock Text="📈 تسوية وفر وزيادة إنتاج القدر (بدون سحب مواد خام)" FontWeight="Bold" FontSize="14" Foreground="#065f46"/>
+                            <TextBlock Text="استخدم هذا الخيار عندما ينتج القدر المطبوخ عدد أنفار فعلية أكثر من المسجل مسبقاً (مثال: سُجّل 50 نفراً وأخرج القدر فعلياً 55 نفراً). سيتم إضافة الأنفار الإضافية مباشرة إلى الكاشير دون خصم أي مواد خام إضافية من المستودع." FontSize="12" Foreground="#047857" TextWrapping="Wrap" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Select Active Cooking Batch -->
+                    <StackPanel Margin="0,0,0,14">
+                        <TextBlock Text="اختر دفعة الطهي / القدر المراد تسوية الزيادة له *" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                        <ComboBox x:Name="SettleBatchComboBox" Height="42" SelectionChanged="SettleBatchComboBox_SelectionChanged" FontSize="13" Padding="10,8" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Batch Summary Card -->
+                    <Border x:Name="SettleBatchDetailsBorder" Background="#f8fafc" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="10" Padding="14" Margin="0,0,0,14" Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="الإنتاج المسجل للقدر" FontSize="11" Foreground="#64748b"/>
+                                <TextBlock x:Name="SettleRecordedPortionsText" Text="50 نفر" FontSize="16" FontWeight="Bold" Foreground="#0f172a" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="المتوفر حالياً بالكاشير" FontSize="11" Foreground="#64748b"/>
+                                <TextBlock x:Name="SettleCurrentPosQtyText" Text="12 نفر" FontSize="16" FontWeight="Bold" Foreground="#0284c7" Margin="0,3,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="حالة سحب المواد الخام" FontSize="11" Foreground="#64748b"/>
+                                <TextBlock Text="0.00 (لن يُسحب مخزون)" FontSize="14" FontWeight="Bold" Foreground="#059669" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Surplus Input Fields -->
+                    <Grid Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="14"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="عدد الأنفار الإضافية (مقدار الزيادة +) *" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                            <TextBox x:Name="SurplusPortionsTextBox" Text="5" Height="42" FontSize="16" FontWeight="Bold" Foreground="#059669" TextAlignment="Center" Padding="10,8" TextChanged="SurplusPortionsTextBox_TextChanged"/>
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="2">
+                            <TextBlock Text="إجمالي إنتاج القدر الفعلي بعد التسوية" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                            <Border Background="#f0fdf4" BorderBrush="#bbf7d0" BorderThickness="1" CornerRadius="6" Height="42" Padding="10,6">
+                                <TextBlock x:Name="SurplusNewTotalPreviewText" Text="55 نفر (+5 أنفار للكاشير)" FontSize="14" FontWeight="Bold" Foreground="#15803d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock Text="سبب الزيادة / ملاحظة التسوية *" FontWeight="SemiBold" FontSize="13" Margin="0,0,0,6"/>
+                        <TextBox x:Name="SurplusReasonTextBox" Text="وفر فعلي في إنتاج القدر بعد الغرف" Height="38" FontSize="13" Padding="10,8" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Actions Footer -->
+            <Border Grid.Row="3" BorderBrush="#f1f5f9" BorderThickness="0,1,0,0" Padding="0,15,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Content="إلغاء" Width="100" Height="44" Background="#f1f5f9" Foreground="#475569" BorderThickness="0" FontWeight="SemiBold" FontSize="14" Cursor="Hand" Click="CloseButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button x:Name="SubmitBatchButton" Grid.Column="2" Content="🍲 اعتماد وبدء طبخ القدر" Padding="25,0" Height="44" Background="#01922a" Foreground="White" BorderThickness="0" FontWeight="Bold" FontSize="15" Cursor="Hand" Click="SubmitBatchButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#017a23"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button x:Name="SubmitSurplusButton" Grid.Column="2" Content="📈 اعتماد زيادة القدر بدون سحب مخزون" Padding="25,0" Height="44" Background="#0284c7" Foreground="White" BorderThickness="0" FontWeight="Bold" FontSize="15" Cursor="Hand" Visibility="Collapsed" Click="SubmitSurplusButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Deficit Approval Overlay (Manager PIN Required) -->
+            <Grid x:Name="DeficitApprovalOverlay" Grid.RowSpan="4" Background="#900f172a" Visibility="Collapsed">
+                <Border Background="White" CornerRadius="14" Width="440" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="24">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
+                            <TextBlock Text="🔒" FontSize="22" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="اعتماد عجز ونقص الطبخة" FontSize="17" FontWeight="Bold" Foreground="#dc2626" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Border Background="#fef2f2" BorderBrush="#fecaca" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock x:Name="DeficitWarningText" Text="⚠️ الأنفار المدخلة (47 نفر) أقل من المعيار القياسي (50 نفر)." FontWeight="Bold" Foreground="#991b1b" FontSize="13" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="DeficitAmountText" Text="قيمة العجز والهدر: -3 أنفار" FontWeight="SemiBold" Foreground="#dc2626" FontSize="12" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Margin="0,0,0,12">
+                            <TextBlock Text="رمز / كلمة مرور المشرف أو المدير *" FontWeight="SemiBold" FontSize="13" Foreground="#1e293b" Margin="0,0,0,6"/>
+                            <PasswordBox x:Name="SupervisorPasswordBox" Height="40" FontSize="16" Padding="10,8" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,12">
+                            <TextBlock Text="سبب النقص / الهدر *" FontWeight="SemiBold" FontSize="13" Foreground="#1e293b" Margin="0,0,0,6"/>
+                            <ComboBox x:Name="DeficitReasonComboBox" Height="40" FontSize="13" SelectedIndex="0" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1">
+                                <ComboBoxItem Content="حروق في قاع القدر (حكاكة)"/>
+                                <ComboBoxItem Content="تالف وهدر أثناء الطبخ أو الغرف"/>
+                                <ComboBoxItem Content="سكب غير مقصود أثناء النقل"/>
+                                <ComboBoxItem Content="صغر حجم الذبيحة / المكون الأساسي"/>
+                                <ComboBoxItem Content="أخرى (موضحة في الملاحظات)"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,0,0,20">
+                            <TextBlock Text="ملاحظة المشرف (اختياري)" FontSize="12" Foreground="#64748b" Margin="0,0,0,4"/>
+                            <TextBox x:Name="DeficitCustomNotesTextBox" Height="36" FontSize="13" Padding="8,6" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                        </StackPanel>
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Button Grid.Column="0" Content="إلغاء والعودة للمعيار" Height="40" Background="#f1f5f9" Foreground="#475569" BorderThickness="0" FontWeight="SemiBold" FontSize="13" Cursor="Hand" Click="CancelDeficitButton_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Grid.Column="2" Content="🛡️ اعتماد وبدء الطبخ" Height="40" Background="#dc2626" Foreground="White" BorderThickness="0" FontWeight="Bold" FontSize="13" Cursor="Hand" Click="ConfirmDeficitButton_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,162 @@
+<Window x:Class="POSSystem.WPF.Views.CashierWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:components="clr-namespace:POSSystem.WPF.Views.Components" xmlns:converters="clr-namespace:POSSystem.WPF.Converters" xmlns:local="clr-namespace:POSSystem.WPF.Views.AdminPages" Title="نظام نقاط البيع - الكاشير" WindowState="Maximized" WindowStartupLocation="CenterScreen" Background="#f8f9fa" FontSize="13" FlowDirection="RightToLeft">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:StringToBrushConverter x:Key="StringToBrushConverter"/>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Grid.LayoutTransform>
+            <ScaleTransform ScaleX="{Binding DataContext.settingsProberty.CashierScale, ElementName=SettingsPage}" 
+                            ScaleY="{Binding DataContext.settingsProberty.CashierScale, ElementName=SettingsPage}"/>
+        </Grid.LayoutTransform>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="LeftColumn" Width="280"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="375"/>
+        </Grid.ColumnDefinitions><!-- Left Sidebar -->
+        <components:CashierSidebar Grid.Column="0" NavigationButtonClick="NavigationButton_Click"/><!-- Center - Products & Search -->
+        <Border x:Name="ProductsPage" Grid.Column="2" Background="White" Margin="0,15,0,15" CornerRadius="15,15,15,15">
+            <Border.CacheMode>
+                <BitmapCache RenderAtScale="{Binding DataContext.settingsProberty.CashierScale, ElementName=SettingsPage, FallbackValue=1.0}" />
+            </Border.CacheMode>
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions><!-- Search Bar and Categories -->
+                <components:ProductSearchBar Grid.Row="0" MenuToggleClick="MenuToggleButton_Click" CategoryButtonClick="CategoryButton_Click" DismantleClick="ProductSearchBar_DismantleClick" CookingBatchClick="ProductSearchBar_CookingBatchClick" Loaded="ProductSearchBar_Loaded"/><!-- Products Grid -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20" IsDeferredScrollingEnabled="True" VirtualizingPanel.ScrollUnit="Pixel">
+                    <ItemsControl ItemsSource="{Binding Products}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource ProductCardStyle}" Width="220" MinHeight="340" MouseLeftButtonUp="ProductCard_MouseLeftButtonUp">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="120"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Height="4" VerticalAlignment="Top" Background="{Binding Category.Color, Converter={StaticResource StringToBrushConverter}, FallbackValue='#f8f9fa'}" CornerRadius="8,8,0,0"/>
+                                        
+                                        <!-- Product Image -->
+                                        <Border Grid.Column="0" Background="#f8f9fa" CornerRadius="8" Width="100" Height="100" BorderBrush="#ccc" BorderThickness="1" ClipToBounds="True">
+                                            <Grid>
+                                                <Image Source="{Binding ImagePath}" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="True" RenderOptions.BitmapScalingMode="LowQuality"/>
+                                                <TextBlock Text="🍽️" FontSize="36" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                           Visibility="{Binding ImagePath, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=Inverse}"/>
+                                            </Grid>
+                                        </Border><!-- Product Info -->
+                                        <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                                            <TextBlock Text="{Binding Name}" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" FontWeight="SemiBold" Foreground="#2c3e50" TextWrapping="Wrap" Margin="0,0,0,5"/>
+                                            <TextBlock Text="{Binding Description}" FontSize="11" Foreground="#6c757d" TextWrapping="Wrap" Margin="0,0,0,10" MaxHeight="40"/><!-- Price and Stock Row -->
+                                            <StackPanel Margin="0,5,0,0">
+                                                <TextBlock Text="{Binding Price, StringFormat='{}{0:N2} ريال'}" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" FontWeight="Bold" Foreground="#01922a" Margin="0,0,0,2"/>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="المتبقي:" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" Foreground="#6c757d" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                    <TextBlock Text="{Binding StockDisplayText, FallbackValue='0.00'}" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" FontWeight="SemiBold" Foreground="#dc3545" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </StackPanel><!-- Quantity Controls -->
+                                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,10,0,0">
+                                            <StackPanel.Style>
+                                                <Style TargetType="StackPanel">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsInOrder}" Value="True">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Style>
+                                            <Button Content="-" Style="{StaticResource QuantityButtonStyle}" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" Command="{Binding DataContext.Commands.DecreaseProductQuantityCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="0,0,8,0"/>
+                                            <TextBox Text="{Binding Quantity, Mode=OneWay}"
+                                                     Tag="{Binding}"
+                                                     FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                     FontWeight="Bold" Foreground="#00358c"
+                                                     Background="White" BorderBrush="#93c5fd" BorderThickness="1.5"
+                                                     MinWidth="46" Height="32" Padding="4,2"
+                                                     TextAlignment="Center" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                                                     GotKeyboardFocus="QuantityTextBox_GotKeyboardFocus"
+                                                     PreviewMouseLeftButtonDown="QuantityTextBox_PreviewMouseLeftButtonDown"
+                                                     PreviewTextInput="QuantityTextBox_PreviewTextInput"
+                                                     TextChanged="ProductQuantityTextBox_TextChanged"
+                                                     LostFocus="ProductQuantityTextBox_LostFocus"
+                                                     KeyDown="QuantityTextBox_KeyDown"
+                                                     ToolTip="اكتب الكمية مباشرة (مثلاً 50)"/>
+                                            <Button Content="+" Style="{StaticResource QuantityButtonStyle}" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" Command="{Binding DataContext.Commands.IncreaseProductQuantityCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="8,0,0,0"/>
+                                        </StackPanel>
+                                        
+                                        <!-- Add to Order Button -->
+                                        <Button Grid.Row="3" Content="أضف للطلب" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" Command="{Binding DataContext.Commands.AddProductToOrderCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" Margin="0,10,0,0">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource AddToOrderButtonStyle}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsInOrder}" Value="True">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                        
+                                        <!-- Dynamic Size Selection Row -->
+                                        <ItemsControl Grid.Row="4" ItemsSource="{Binding ProductSizes}" Margin="0,10,0,0">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="3"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="{Binding SizeName}" 
+                                                            Click="AddProductSize_Click" 
+                                                            Padding="10,8" MinHeight="40" Margin="0,0,8,0" FontSize="{Binding DataContext.settingsProberty.ItemFontSize, RelativeSource={RelativeSource AncestorType=Window}}" FontWeight="Medium"
+                                                            Background="#e2e6ea" Foreground="#2c3e50" BorderThickness="0" Cursor="Hand">
+                                                        <Button.Resources>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="CornerRadius" Value="100"/>
+                                                            </Style>
+                                                        </Button.Resources>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Border><!-- Orders Page -->
+        <components:OrdersView x:Name="OrdersPage" Grid.Column="2" Grid.ColumnSpan="3" Visibility="Collapsed" BackToProductsClick="BackToProducts_Click" ViewOrderDetailsClick="ViewOrderDetails_Click" ReprintOrderClick="ReprintOrder_Click" CancelOrderClick="CancelOrder_Click" RefreshOrdersClick="RefreshOrders_Click"/><!-- Return Orders Page -->
+        <local:ReturnOrderView x:Name="ReturnOrdersPage" Grid.Column="2" Grid.ColumnSpan="3" Visibility="Collapsed" /><!-- Cash Box Report Page -->
+        <components:CashBoxReportView x:Name="CashBoxReportPage" Grid.Column="2" Grid.ColumnSpan="3" Visibility="Collapsed" BackToProductsClick="BackToProducts_Click"/><!-- Settings Page -->
+        <components:SettingsView x:Name="SettingsPage" Grid.Column="2" Grid.ColumnSpan="3" Visibility="Collapsed" BackToProductsClick="BackToProducts_Click" SaveSettingsClick="SaveSettings_Click" RestartSystemClick="RestartSystem_Click" ClearDataClick="ClearData_Click" ExportDataClick="ExportData_Click"/><!-- Right Sidebar - Order Details -->
+        <components:OrderSidebar x:Name="OrderSidebar" Grid.Column="4" Loaded="OrderSidebar_Loaded"/><!-- Overlay Container for Popups -->
+        <Grid x:Name="OverlayGrid" Grid.Column="0" Grid.ColumnSpan="5" Visibility="Collapsed" Background="#7F000000"><!-- Close on background click -->
+            <Grid.InputBindings>
+                <MouseBinding MouseAction="LeftClick" Command="{Binding CloseOverlayCommand}"/>
+            </Grid.InputBindings>
+            <ContentControl x:Name="PopupContainer" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</Window>

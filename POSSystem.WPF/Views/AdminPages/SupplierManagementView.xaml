@@ -1,0 +1,369 @@
+﻿<UserControl x:Class="POSSystem.WPF.Views.AdminPages.SupplierManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:POSSystem.WPF.Converters"
+             mc:Ignorable="d" 
+             FlowDirection="RightToLeft">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:GreaterThanConverter x:Key="GreaterThanConverter"/>
+            <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+            <converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="#F5F7FB">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" CornerRadius="0,0,15,15" Margin="0,0,0,15" Padding="25,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+            </Border.Effect>
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="🚚 إدارة الموردين" FontSize="28" FontWeight="Bold" Foreground="#2c3e50" Margin="0,0,0,5"/>
+                <TextBlock Text="إدارة بيانات الموردين، مشتريات الآجل، وسندات الصرف" FontSize="14" Foreground="#6C757D"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Summary Cards -->
+        <UniformGrid Grid.Row="1" Columns="3" Margin="20,0,20,15">
+            <!-- Total Debt Card -->
+            <Border Background="White" CornerRadius="12" Margin="10,0" Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" Opacity="0.05" BlurRadius="5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="إجمالي المديونية" FontSize="14" Foreground="#6C757D" Margin="0,0,0,10"/>
+                        <TextBlock Text="{Binding Property.TotalSuppliersDebt, StringFormat='{}{0:N0} ريال'}" 
+                                   FontSize="24" FontWeight="Bold" Foreground="#E74C3C"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="💰" FontSize="32" VerticalAlignment="Center" Opacity="0.5"/>
+                </Grid>
+            </Border>
+
+            <!-- Total Suppliers Card -->
+            <Border Background="White" CornerRadius="12" Margin="10,0" Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" Opacity="0.05" BlurRadius="5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="إجمالي الموردين" FontSize="14" Foreground="#6C757D" Margin="0,0,0,10"/>
+                        <TextBlock Text="{Binding Property.TotalSuppliersCount}" 
+                                   FontSize="24" FontWeight="Bold" Foreground="#2C3E50"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="🏢" FontSize="32" VerticalAlignment="Center" Opacity="0.5"/>
+                </Grid>
+            </Border>
+
+            <!-- Overdue Card -->
+            <Border Background="White" CornerRadius="12" Margin="10,0" Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" Opacity="0.05" BlurRadius="5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="موردين عليهم مستحقات" FontSize="14" Foreground="#6C757D" Margin="0,0,0,10"/>
+                        <TextBlock Text="{Binding Property.OverdueSuppliersCount}" 
+                                   FontSize="24" FontWeight="Bold" Foreground="#F39C12"/>
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="⏳" FontSize="32" VerticalAlignment="Center" Opacity="0.5"/>
+                </Grid>
+            </Border>
+        </UniformGrid>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Row="2" Margin="20,0,20,20">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="480"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Supplier List -->
+                <Border Grid.Column="0" Background="White" CornerRadius="15" Margin="0,0,15,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- List Header / Actions -->
+                        <Border Grid.Row="0" Background="#f8f9fa" CornerRadius="15,15,0,0" Padding="15">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Text="{Binding Property.SearchText, UpdateSourceTrigger=PropertyChanged}" 
+                                         Tag="بحث عن مورد..." Style="{StaticResource SearchTextBoxStyle}"/>
+                                <Button Grid.Column="1" Content="➕ مورد جديد" Command="{Binding Commands.AddSupplierCommand}" 
+                                        Style="{StaticResource ActionButtonStyle}" Margin="10,0,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <Grid Grid.Row="1">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" Background="#f8f9fa" BorderBrush="#e9ecef" BorderThickness="0,1,0,1" Padding="25,15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="100"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="اسم المورد" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                                    <TextBlock Grid.Column="1" Text="الرقم الضريبي" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="2" Text="الجوال" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="3" Text="الرصيد الحالي" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Column="4" Text="الإجراءات" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                            <ListBox Grid.Row="1" ItemsSource="{Binding Property.Suppliers}" 
+                                     SelectedItem="{Binding Property.SelectedSupplier}"
+                                     Background="Transparent" BorderThickness="0" Padding="25,0,25,25" ScrollViewer.HorizontalScrollBarVisibility="Disabled" VirtualizingStackPanel.IsVirtualizing="True" VirtualizingStackPanel.VirtualizationMode="Recycling">
+                                <ListBox.ItemContainerStyle>
+                                    <StaticResource ResourceKey="TableListItemStyle"/>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="White" BorderBrush="#e9ecef" BorderThickness="0,1,0,0" Padding="0,14">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="100"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Right" TextWrapping="Wrap"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding VatNumber}" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding PhoneNumber}" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                
+                                                <TextBlock Grid.Column="3" Text="{Binding TotalBalance, StringFormat='{}{0:N0}'}" FontWeight="Bold" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding TotalBalance}" Value="0">
+                                                                    <Setter Property="Foreground" Value="#27AE60"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding TotalBalance, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}" Value="True">
+                                                                    <Setter Property="Foreground" Value="#E74C3C"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+
+                                                <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                    <Button Content="✏️" Command="{Binding DataContext.Commands.EditSupplierCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                            CommandParameter="{Binding}" Style="{StaticResource IconButtonSmallStyle}"/>
+                                                    <Button Content="🗑️" Command="{Binding DataContext.Commands.DeleteSupplierCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                            CommandParameter="{Binding}" Style="{StaticResource IconButtonSmallStyle}" Margin="5,0,0,0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+
+                        <!-- Empty State -->
+                        <Border Background="White" Visibility="{Binding Property.HasNoSuppliers, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock Text="📭" FontSize="64" HorizontalAlignment="Center" Opacity="0.3" Margin="0,0,0,20"/>
+                                <TextBlock Text="لا يوجد موردين مضافين حالياً" FontSize="18" FontWeight="Bold" Foreground="#6C757D" HorizontalAlignment="Center"/>
+                                <TextBlock Text="قم بإضافة مورد جديد للبدء في إدارة المشتريات والديون" FontSize="14" Foreground="#ADADAD" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- Detailed View (Right Panel) -->
+                <Border Grid.Column="1" Background="White" CornerRadius="15" Padding="15">
+                    <Grid>
+                        <TextBlock Text="اختر مورد لعرض التفاصيل" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   Visibility="{Binding Property.SelectedSupplier, Converter={StaticResource NullToVisibilityConverter}}"/>
+                        
+                        <Grid Visibility="{Binding Property.SelectedSupplier, Converter={StaticResource NotNullToVisibilityConverter}}">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                                <TextBlock Text="{Binding Property.SelectedSupplier.Name}" FontSize="20" FontWeight="Bold" Foreground="#2C3E50"/>
+                                <TextBlock Text="{Binding Property.SelectedSupplier.Address}" Foreground="#6C757D" FontSize="12"/>
+                            </StackPanel>
+
+                            <Button Grid.Row="1" Content="💵 تسجيل سند صرف (دفع)" Command="{Binding Commands.RecordPaymentCommand}" 
+                                    Style="{StaticResource SuccessButtonStyle}" Margin="0,0,0,15"/>
+
+                            <TabControl Grid.Row="2" Style="{StaticResource ModernTabControlStyle}">
+                                <TabItem Header="كشف الحساب">
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" Background="#f8f9fa" BorderBrush="#e9ecef" BorderThickness="0,1,0,1" Padding="10,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="80"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="70"/>
+                                                    <ColumnDefinition Width="70"/>
+                                                    <ColumnDefinition Width="80"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="التاريخ" FontWeight="Bold" FontSize="12" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                                                <TextBlock Grid.Column="1" Text="البيان / المستند" FontWeight="Bold" FontSize="12" Foreground="#2c3e50" HorizontalAlignment="Right" Margin="5,0"/>
+                                                <TextBlock Grid.Column="2" Text="مدين (-)" FontWeight="Bold" FontSize="12" Foreground="#27ae60" HorizontalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="دائن (+)" FontWeight="Bold" FontSize="12" Foreground="#e74c3c" HorizontalAlignment="Center"/>
+                                                <TextBlock Grid.Column="4" Text="الرصيد" FontWeight="Bold" FontSize="12" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                        <ListBox Grid.Row="1" ItemsSource="{Binding Property.SelectedSupplierLedger}" Background="Transparent" BorderThickness="0" Padding="5,0,5,15" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <ListBox.ItemContainerStyle>
+                                                <StaticResource ResourceKey="TableListItemStyle"/>
+                                            </ListBox.ItemContainerStyle>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="White" BorderBrush="#e9ecef" BorderThickness="0,1,0,0" Padding="5,10">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="80"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="70"/>
+                                                                <ColumnDefinition Width="70"/>
+                                                                <ColumnDefinition Width="80"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Grid.Column="0" Text="{Binding Date, StringFormat='yyyy/MM/dd'}" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="#6c757d"/>
+                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="5,0">
+                                                                <TextBlock Text="{Binding TransactionType}" FontSize="12" FontWeight="SemiBold" Foreground="#2c3e50" TextTrimming="CharacterEllipsis"/>
+                                                                <TextBlock Text="{Binding ReferenceNumber}" FontSize="10" Foreground="#888" TextTrimming="CharacterEllipsis"/>
+                                                            </StackPanel>
+                                                            <TextBlock Grid.Column="2" Text="{Binding Debit, StringFormat='{}{0:N0}'}" FontSize="12" FontWeight="SemiBold" Foreground="#27ae60" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Grid.Column="3" Text="{Binding Credit, StringFormat='{}{0:N0}'}" FontSize="12" FontWeight="SemiBold" Foreground="#e74c3c" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Grid.Column="4" Text="{Binding Balance, StringFormat='{}{0:N0}'}" FontSize="12" FontWeight="Bold" Foreground="#2c3e50" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="المشتريات">
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" Background="#f8f9fa" BorderBrush="#e9ecef" BorderThickness="0,1,0,1" Padding="15,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="التاريخ" FontWeight="Bold" FontSize="13" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                                                <TextBlock Grid.Column="1" Text="المبلغ" FontWeight="Bold" FontSize="13" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="الحالة" FontWeight="Bold" FontSize="13" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                        <ListBox Grid.Row="1" ItemsSource="{Binding Property.SelectedSupplierPurchases}" Background="Transparent" BorderThickness="0" Padding="15,0,15,15" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <ListBox.ItemContainerStyle>
+                                                <StaticResource ResourceKey="TableListItemStyle"/>
+                                            </ListBox.ItemContainerStyle>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="White" BorderBrush="#e9ecef" BorderThickness="0,1,0,0" Padding="0,10">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Grid.Column="0" Text="{Binding PurchaseDate, StringFormat='yyyy/MM/dd'}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                                            <TextBlock Grid.Column="1" Text="{Binding TotalAmount, StringFormat='{}{0:N0}'}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                            <TextBlock Grid.Column="2" Text="{Binding PaymentMethod}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Grid>
+                                </TabItem>
+                                <TabItem Header="المدفوعات">
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" Background="#f8f9fa" BorderBrush="#e9ecef" BorderThickness="0,1,0,1" Padding="15,10">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="التاريخ" FontWeight="Bold" FontSize="13" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                                                <TextBlock Grid.Column="1" Text="المبلغ" FontWeight="Bold" FontSize="13" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                        <ListBox Grid.Row="1" ItemsSource="{Binding Property.SelectedSupplierPayments}" Background="Transparent" BorderThickness="0" Padding="15,0,15,15" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                            <ListBox.ItemContainerStyle>
+                                                <StaticResource ResourceKey="TableListItemStyle"/>
+                                            </ListBox.ItemContainerStyle>
+                                            <ListBox.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="White" BorderBrush="#e9ecef" BorderThickness="0,1,0,0" Padding="0,10">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Grid.Column="0" Text="{Binding PaymentDate, StringFormat='yyyy/MM/dd'}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                                            <TextBlock Grid.Column="1" Text="{Binding Amount, StringFormat='{}{0:N0}'}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ListBox.ItemTemplate>
+                                        </ListBox>
+                                    </Grid>
+                                </TabItem>
+                            </TabControl>
+                        </Grid>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

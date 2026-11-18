@@ -1,0 +1,270 @@
+<UserControl x:Class="POSSystem.WPF.Views.AdminPages.FinancialAccountsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             Background="#f8f9fa">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="White" CornerRadius="15" Margin="20,20,20,10" Padding="25,18">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="🏦 إدارة الحسابات المالية والمحافظ والبنوك" FontSize="24" FontWeight="Bold" Foreground="#00358c"/>
+                    <TextBlock Text="متابعة أرصدة الصندوق الرئيسي والحسابات البنكية والمحافظ الإلكترونية، والتحويلات وكشوف الحسابات" FontSize="13" Foreground="#64748b" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="➕ إنشاء حساب جديد" Click="AddAccount_Click" Background="#00358c" Foreground="White" FontWeight="Bold" FontSize="13" Padding="16,10" Margin="0,0,8,0" BorderThickness="0" Cursor="Hand"/>
+                    <Button Content="🔄 تحويل بين الحسابات" Click="Transfer_Click" Background="#0284c7" Foreground="White" FontWeight="Bold" FontSize="13" Padding="16,10" Margin="0,0,8,0" BorderThickness="0" Cursor="Hand"/>
+                    <Button Content="🏛️ إيداع من الصندوق للبنك" Click="OwnerDeposit_Click" Background="#01922a" Foreground="White" FontWeight="Bold" FontSize="13" Padding="16,10" Margin="0,0,8,0" BorderThickness="0" Cursor="Hand"/>
+                    <Button Content="تحديث" Click="Refresh_Click" Background="#e2e8f0" Foreground="#1e293b" FontWeight="SemiBold" FontSize="13" Padding="14,10" BorderThickness="0" Cursor="Hand"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Accounts Cards & Statement Area -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="20,0,20,20">
+            <StackPanel>
+                <!-- Total Wallets & Cash Box Summary Strip -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="15"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="White" CornerRadius="14" Padding="20,16" BorderBrush="#bae6fd" BorderThickness="1.5">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.04" BlurRadius="8"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="📱 إجمالي رصيد المحافظ والبنوك بالكامل" FontSize="13" FontWeight="SemiBold" Foreground="#0369a1"/>
+                            <TextBlock x:Name="TotalWalletsBalanceText" Text="0 ريال" FontSize="24" FontWeight="Bold" Foreground="#0284c7" Margin="0,4,0,0"/>
+                            <TextBlock x:Name="TotalWalletsCountText" Text="مجموع الأرصدة الحالية في جميع المحافظ الإلكترونية" FontSize="11" Foreground="#64748b" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="White" CornerRadius="14" Padding="20,16" BorderBrush="#bbf7d0" BorderThickness="1.5">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.04" BlurRadius="8"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="💵 رصيد الصندوق الرئيسي (نقد الكاشير)" FontSize="13" FontWeight="SemiBold" Foreground="#15803d"/>
+                            <TextBlock x:Name="MainCashBoxBalanceText" Text="0 ريال" FontSize="24" FontWeight="Bold" Foreground="#16a34a" Margin="0,4,0,0"/>
+                            <TextBlock Text="السيولة النقدية المتوفرة في درج الصندوق" FontSize="11" Foreground="#64748b" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="4" Background="#00358c" CornerRadius="14" Padding="20,16">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="3" Opacity="0.18" BlurRadius="10"/>
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="🏦 إجمالي السيولة الكلية (الصندوق + المحافظ)" FontSize="13" FontWeight="SemiBold" Foreground="#e0f2fe"/>
+                            <TextBlock x:Name="GrandTotalLiquidityText" Text="0 ريال" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,4,0,0"/>
+                            <TextBlock Text="إجمالي الأموال المتوفرة في جميع حسابات المطعم" FontSize="11" Foreground="#bae6fd" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Cards Grid -->
+                <ItemsControl x:Name="AccountsItemsControl">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="14" Width="340" Margin="0,0,15,15" Padding="20" BorderBrush="#e2e8f0" BorderThickness="1">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.04" BlurRadius="8"/>
+                                </Border.Effect>
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="{Binding AccountName}" FontSize="17" FontWeight="Bold" Foreground="#0f172a"/>
+                                            <TextBlock Text="{Binding AccountTypeText}" FontSize="12" Foreground="#0284c7" FontWeight="SemiBold" Margin="0,2,0,0"/>
+                                            <TextBlock Text="{Binding BankOrWalletName}" FontSize="12" Foreground="#64748b"/>
+                                        </StackPanel>
+                                        <Border Grid.Column="1" Background="{Binding StatusBadgeBackground}" CornerRadius="8" Padding="10,4" VerticalAlignment="Top">
+                                            <TextBlock Text="{Binding StatusText}" Foreground="{Binding StatusBadgeForeground}" FontSize="11" FontWeight="Bold"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <Border Background="#f8fafc" CornerRadius="10" Padding="12" Margin="0,12,0,10">
+                                        <StackPanel>
+                                            <TextBlock Text="الرصيد الحالي" FontSize="11" Foreground="#64748b"/>
+                                            <TextBlock Text="{Binding CurrentBalance, StringFormat='{}{0:N0} ريال'}" FontSize="22" FontWeight="Bold" Foreground="#00358c" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Text="إجمالي الداخل" FontSize="11" Foreground="#64748b"/>
+                                            <TextBlock Text="{Binding TotalInflow, StringFormat='+{0:N0}'}" FontSize="13" FontWeight="Bold" Foreground="#01922a"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <TextBlock Text="إجمالي الخارج" FontSize="11" Foreground="#64748b"/>
+                                            <TextBlock Text="{Binding TotalOutflow, StringFormat='-{0:N0}'}" FontSize="13" FontWeight="Bold" Foreground="#dc2626"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <TextBlock Text="{Binding LastTransactionDisplay, StringFormat='آخر حركة: {0}'}" FontSize="11" Foreground="#94a3b8" Margin="0,0,0,12"/>
+
+                                    <!-- Card Action Buttons (Statement, Edit, Toggle Status Only - Deposit/Withdraw removed per user request) -->
+                                    <UniformGrid Columns="3" Rows="1">
+                                        <Button Content="📑 كشف حساب" Tag="{Binding}" Click="StatementCard_Click" Background="#e0f2fe" Foreground="#0369a1" FontWeight="SemiBold" FontSize="12" Margin="2" Padding="6,8" BorderThickness="0" Cursor="Hand"/>
+                                        <Button Content="✏️ تعديل" Tag="{Binding}" Click="EditCard_Click" Background="#f1f5f9" Foreground="#334155" FontWeight="SemiBold" FontSize="12" Margin="2" Padding="6,8" BorderThickness="0" Cursor="Hand"/>
+                                        <Button Content="🔒 تفعيل/تعطيل" Tag="{Binding}" Click="ToggleCard_Click" Background="#fef3c7" Foreground="#92400e" FontWeight="SemiBold" FontSize="12" Margin="2" Padding="6,8" BorderThickness="0" Cursor="Hand"/>
+                                    </UniformGrid>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- Account Statement Popup Modal Overlay -->
+        <Grid x:Name="StatementModalOverlay" Grid.RowSpan="2" Background="#80000000" Visibility="Collapsed">
+            <Border x:Name="StatementPanel" Background="White" CornerRadius="16" Width="1020" MaxHeight="680" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="24" BorderBrush="#cbd5e1" BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" BlurRadius="25" ShadowDepth="4" Opacity="0.25"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Popup Header -->
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock x:Name="StatementTitleText" Text="📑 كشف حساب" FontSize="21" FontWeight="Bold" Foreground="#00358c"/>
+                            <TextBlock x:Name="StatementSubTitleText" Text="سجل كافة الحركات المالية الداخلة والخارجة والرصيد التراكمي" FontSize="13" FontWeight="SemiBold" Foreground="#475569" Margin="0,4,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="من:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,6,0"/>
+                            <DatePicker x:Name="StatementFromDate" Width="130" Margin="0,0,10,0" SelectedDateChanged="StatementDate_Changed"/>
+                            <TextBlock Text="إلى:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,6,0"/>
+                            <DatePicker x:Name="StatementToDate" Width="130" Margin="0,0,10,0" SelectedDateChanged="StatementDate_Changed"/>
+                            <Button Content="📊 حفظ كـ Excel" Click="ExportStatementCsv_Click" Background="#01922a" Foreground="White" FontWeight="Bold" Padding="14,8" Margin="0,0,8,0" BorderThickness="0" Cursor="Hand"/>
+                            <Button Content="✕ إغلاق" Click="CloseStatementPopup_Click" Background="#ef4444" Foreground="White" FontWeight="Bold" Padding="14,8" BorderThickness="0" Cursor="Hand"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Statement DataGrid -->
+                    <DataGrid Grid.Row="1" x:Name="StatementDataGrid" AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" MaxHeight="520" RowHeaderWidth="0" GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#e2e8f0" Background="White" BorderBrush="#e2e8f0" BorderThickness="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="التاريخ والوقت" Binding="{Binding TransactionDate, StringFormat='yyyy/MM/dd HH:mm'}" Width="140"/>
+                            <DataGridTextColumn Header="نوع الحركة" Binding="{Binding TransactionTypeText}" Width="140"/>
+                            <DataGridTextColumn Header="رقم المرجع" Binding="{Binding ReferenceNumber}" Width="140"/>
+                            <DataGridTextColumn Header="البيان" Binding="{Binding Description}" Width="*"/>
+                            <DataGridTextColumn Header="المبلغ الداخل (+)" Binding="{Binding AmountIn, StringFormat='{}{0:N0}'}" Width="120"/>
+                            <DataGridTextColumn Header="المبلغ الخارج (-)" Binding="{Binding AmountOut, StringFormat='{}{0:N0}'}" Width="120"/>
+                            <DataGridTextColumn Header="الرصيد بعد الحركة" Binding="{Binding BalanceAfter, StringFormat='{}{0:N0}'}" Width="130"/>
+                            <DataGridTextColumn Header="المنفذ" Binding="{Binding PerformedByUserName}" Width="120"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Modal Overlay for Add/Edit Account and Transfer -->
+        <Grid x:Name="ModalOverlay" Grid.RowSpan="2" Background="#80000000" Visibility="Collapsed">
+            <Border Background="White" CornerRadius="14" Width="480" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="24">
+                <StackPanel>
+                    <TextBlock x:Name="ModalTitleText" Text="عملية حساب مالي" FontSize="19" FontWeight="Bold" Foreground="#00358c" Margin="0,0,0,15"/>
+
+                    <!-- Account Create/Edit Fields -->
+                    <StackPanel x:Name="AccountEditFieldsPanel" Visibility="Collapsed">
+                        <TextBlock Text="اسم الحساب *" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="AccNameBox" Height="36" Padding="8,6" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="نوع الحساب *" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <ComboBox x:Name="AccTypeCombo" Height="36" SelectedIndex="1" Margin="0,0,0,10">
+                            <ComboBoxItem Content="الصندوق الرئيسي" Tag="0"/>
+                            <ComboBoxItem Content="حساب بنكي" Tag="1"/>
+                            <ComboBoxItem Content="محفظة إلكترونية" Tag="2"/>
+                        </ComboBox>
+
+                        <TextBlock Text="اسم البنك أو المحفظة *" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="AccBankNameBox" Height="36" Padding="8,6" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="رقم الحساب / المحفظة (اختياري)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="AccNumberBox" Height="36" Padding="8,6" Margin="0,0,0,10"/>
+
+                        <TextBlock x:Name="AccOpeningBalanceLabel" Text="الرصيد الافتتاحي (عند الإنشاء)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="AccOpeningBalanceBox" Text="0" Height="36" Padding="8,6" Margin="0,0,0,10"/>
+                    </StackPanel>
+
+                    <!-- Transfer Fields -->
+                    <StackPanel x:Name="TransactionFieldsPanel" Visibility="Collapsed">
+                        <StackPanel x:Name="FromAccountPanel" Margin="0,0,0,10">
+                            <TextBlock x:Name="FromAccountLabel" Text="الحساب *" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <ComboBox x:Name="FromAccountCombo" DisplayMemberPath="AccountName" SelectedValuePath="Id" Height="36"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="ToAccountPanel" Margin="0,0,0,10" Visibility="Collapsed">
+                            <TextBlock Text="إلى الحساب المستلم *" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                            <ComboBox x:Name="ToAccountCombo" DisplayMemberPath="AccountName" SelectedValuePath="Id" Height="36"/>
+                        </StackPanel>
+
+                        <TextBlock Text="المبلغ *" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TxAmountBox" Height="36" Padding="8,6" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="رقم المرجع / الإشعار (اختياري)" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TxRefBox" Height="36" Padding="8,6" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="البيان / الوصف *" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TxDescBox" Height="36" Padding="8,6" Margin="0,0,0,10"/>
+
+                        <TextBlock Text="ملاحظات إضافية" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                        <TextBox x:Name="TxNotesBox" Height="55" TextWrapping="Wrap" AcceptsReturn="True" Padding="8,6" Margin="0,0,0,10"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,0,0">
+                        <Button Content="حفظ واعتماد" Click="ModalConfirm_Click" Background="#00358c" Foreground="White" FontWeight="Bold" Padding="22,10" Margin="0,0,10,0" BorderThickness="0" Cursor="Hand"/>
+                        <Button Content="إلغاء" Click="ModalCancel_Click" Background="#e2e8f0" Foreground="#334155" FontWeight="SemiBold" Padding="18,10" BorderThickness="0" Cursor="Hand"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,649 @@
+<UserControl x:Class="POSSystem.WPF.Views.AdminPages.ExpenseManagementView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converters="clr-namespace:POSSystem.WPF.Converters" FlowDirection="RightToLeft">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+            <converters:ExpenseTypeConverter x:Key="ExpenseTypeConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions><!-- Header -->
+        <Border Grid.Row="0" Background="White" CornerRadius="15,15,15,15" Margin="20,20,20,10" Padding="25,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="💵 إدارة المصروفات" FontSize="28" FontWeight="Bold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                <TextBlock Text="إدارة المصروفات الشهرية، كشف وجرد حسابات المصروفات التفصيلي، وسندات القبض والصرف" FontSize="14" Foreground="#6c757d" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border><!-- Content -->
+        <Grid Grid.Row="1" Margin="20,0,20,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions><!-- Section Buttons -->
+            <Border Grid.Row="0" Background="White" CornerRadius="12" Padding="15" Margin="0,0,0,15">
+                <Border.Effect>
+                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+                </Border.Effect>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <!-- 1. المصروفات الشهرية -->
+                    <Button Content="📋 المصروفات الشهرية" Command="{Binding Commands.ShowExpensesCommand}" Margin="0,0,10,0" Padding="20,10">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavigationButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding expenseManagementProberty.IsExpensesVisible}" Value="True">
+                                        <Setter Property="Background" Value="#00358c"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="12,12,12,12" Margin="5,0">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="4" Opacity="0.25" BlurRadius="15"/>
+                                                        </Border.Effect>
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,0"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="#1a4b9c"/>
+                                                            <Setter TargetName="Border" Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="6" Opacity="0.3" BlurRadius="20"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- 2. كشف وجرد حسابات المصروفات (بجانب المصروفات الشهرية مباشرة ومنعزل بالكامل) -->
+                    <Button Content="🏦 كشف وجرد حسابات المصروفات" Command="{Binding Commands.ShowAccountsCommand}" Margin="0,0,10,0" Padding="20,10">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavigationButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding expenseManagementProberty.IsAccountsVisible}" Value="True">
+                                        <Setter Property="Background" Value="#00358c"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="12,12,12,12" Margin="5,0">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="4" Opacity="0.25" BlurRadius="15"/>
+                                                        </Border.Effect>
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,0"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="#1a4b9c"/>
+                                                            <Setter TargetName="Border" Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="6" Opacity="0.3" BlurRadius="20"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <!-- 3. سندات القبض والصرف -->
+                    <Button Content="🧾 سندات القبض والصرف" Command="{Binding Commands.ShowVouchersCommand}" Padding="20,10">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavigationButtonStyle}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding expenseManagementProberty.IsVouchersVisible}" Value="True">
+                                        <Setter Property="Background" Value="#00358c"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="12,12,12,12" Margin="5,0">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="4" Opacity="0.25" BlurRadius="15"/>
+                                                        </Border.Effect>
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15,0"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter TargetName="Border" Property="Background" Value="#1a4b9c"/>
+                                                            <Setter TargetName="Border" Property="Effect">
+                                                                <Setter.Value>
+                                                                    <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="6" Opacity="0.3" BlurRadius="20"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <!-- ========================================================================= -->
+            <!-- 1. Expenses Section (المصروفات الشهرية - بدون جدول جرد الحسابات المزدحم) -->
+            <!-- ========================================================================= -->
+            <Grid Grid.Row="1" x:Name="ExpensesSection" Visibility="{Binding expenseManagementProberty.IsExpensesVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions><!-- Filters and Actions -->
+                <Border Grid.Row="0" Background="#f8f9fa" Padding="15" CornerRadius="8" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions><!-- Action Buttons -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                            <Button Content="➕ إضافة مصروف" Click="AddExpenseButton_Click" Background="#00358c" Foreground="White" Padding="12,8" BorderThickness="0" FontSize="13" FontWeight="SemiBold" Margin="0,0,10,0" Cursor="Hand"/>
+                            <Button Content="📊 حفظ كـ Excel" Background="#3498DB" Foreground="White" BorderThickness="0" Padding="12,8" FontSize="13" FontWeight="SemiBold" Click="PrintReport_Click" Margin="0,0,10,0" Cursor="Hand"/>
+                        </StackPanel><!-- Filters -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="من:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <DatePicker Grid.Column="1" SelectedDate="{Binding expenseManagementProberty.StartDate}" Width="150" Margin="0,0,20,0"/>
+                            <TextBlock Grid.Column="2" Text="إلى:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <DatePicker Grid.Column="3" SelectedDate="{Binding expenseManagementProberty.EndDate}" Width="150" Margin="0,0,20,0"/>
+                            <TextBlock Grid.Column="4" Text="حساب الصرف:" FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Grid.Column="5" ItemsSource="{Binding expenseManagementProberty.ExpenseCategories}" SelectedItem="{Binding expenseManagementProberty.SelectedCategory}" Width="210" Margin="0,0,20,0"/>
+                            <TextBlock Grid.Column="6" Text="النوع:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Grid.Column="7" ItemsSource="{Binding expenseManagementProberty.ExpenseTypes}" SelectedItem="{Binding expenseManagementProberty.SelectedExpenseType}" Width="150" Margin="0,0,10,0">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Converter={StaticResource ExpenseTypeConverter}}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <Button Grid.Column="8" Content="🔄 مسح الفلاتر" Command="{Binding Commands.ClearFiltersCommand}" Background="#95a5a6" Foreground="White" Padding="10,6" BorderThickness="0" FontSize="12" FontWeight="SemiBold" Cursor="Hand"/>
+                        </Grid>
+                    </Grid>
+                </Border><!-- Summary -->
+                <Border Grid.Row="1" Background="#e8f0fe" Padding="15,12" CornerRadius="8" Margin="0,0,0,10">
+                    <TextBlock Text="{Binding expenseManagementProberty.TotalExpenses, StringFormat=&apos;إجمالي المصروفات للفترة المحددة: {0:N0} ريال&apos;}" FontSize="16" FontWeight="Bold" Foreground="#00358c"/>
+                </Border><!-- Expenses List -->
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!-- Table Header -->
+                    <Border Grid.Row="0" Background="#f8f9fa" BorderBrush="#e9ecef" BorderThickness="0,1,0,1" Padding="25,15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="180"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="اسم المصروف" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                            <TextBlock Grid.Column="1" Text="الحساب / الجهة" FontWeight="Bold" FontSize="13" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="النوع" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="3" Text="طريقة الدفع" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="المبلغ" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="التاريخ" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="الملاحظات" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                            <TextBlock Grid.Column="7" Text="الإجراءات" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <!-- ListBox -->
+                    <ListBox Grid.Row="1" ItemsSource="{Binding expenseManagementProberty.Expenses}" 
+                             SelectedItem="{Binding SelectedExpense}"
+                             Background="Transparent" BorderThickness="0" 
+                             Padding="25,0,25,25"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             VirtualizingStackPanel.IsVirtualizing="True"
+                             VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <ListBox.ItemContainerStyle>
+                            <StaticResource ResourceKey="TableListItemStyle"/>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" BorderBrush="#e9ecef" BorderThickness="0,1,0,0" Padding="0,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="150"/>
+                                            <ColumnDefinition Width="90"/>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="180"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Category}" FontSize="13" FontWeight="SemiBold" Foreground="#0f172a" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding TypeText}" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding PaymentMethodText}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#1976D2" FontWeight="SemiBold"/>
+                                        <TextBlock Grid.Column="4" Text="{Binding Amount, StringFormat=&apos;{}{0:N0} ريال&apos;}" FontSize="14" FontWeight="Bold" Foreground="#dc2626" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="5" Text="{Binding ExpenseDate, StringFormat=&apos;{}{0:yyyy-MM-dd}&apos;}" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="6" Text="{Binding Notes}" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="#6c757d"/>
+                                        
+                                        <StackPanel Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="✏️ تعديل" Command="{Binding DataContext.Commands.EditExpenseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource EditButtonStyle}" Padding="10,6" Margin="4,0" FontSize="12" Cursor="Hand"/>
+                                            <Button Content="🗑️ حذف" Command="{Binding DataContext.Commands.DeleteExpenseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource DeleteButtonStyle}" Padding="10,6" Margin="4,0" FontSize="12" Cursor="Hand"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
+
+            <!-- ========================================================================= -->
+            <!-- 2. Accounts Inventory Section (كشف وجرد حسابات المصروفات - قائمة الحسابات) -->
+            <!-- ========================================================================= -->
+            <Grid Grid.Row="1" x:Name="AccountsSection" Visibility="{Binding expenseManagementProberty.IsAccountsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Toolbar: Actions, Excel Export, New Account Creation, Date Range & Search -->
+                <Border Grid.Row="0" Background="White" Padding="18,14" CornerRadius="12" Margin="0,0,0,12" BorderBrush="#e2e8f0" BorderThickness="1">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Top Row: Quick Actions & Excel Export + Quick Add Account -->
+                        <Grid Grid.Row="0" Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                <Button Content="💸 صرف مبلغ في الحساب المحدد" Click="AddExpenseToSelectedAccount_Click" Background="#00358c" Foreground="White" Padding="14,9" BorderThickness="0" FontSize="13" FontWeight="SemiBold" Margin="0,0,8,0" Cursor="Hand"/>
+                                <Button Content="✏️ تعديل اسم الحساب المحدد" Command="{Binding Commands.StartEditAccountCommand}" Background="#0284c7" Foreground="White" Padding="14,9" BorderThickness="0" FontSize="13" FontWeight="SemiBold" Margin="0,0,8,0" Cursor="Hand"/>
+                                <Button Content="📊 حفظ جرد الحسابات Excel" Click="PrintAccountsSummary_Click" Background="#16a34a" Foreground="White" Padding="14,9" BorderThickness="0" FontSize="13" FontWeight="SemiBold" Margin="0,0,8,0" Cursor="Hand"/>
+                                <Button Content="🔄 تحديث الجرد" Command="{Binding Commands.LoadExpensesCommand}" Background="#64748b" Foreground="White" Padding="12,9" BorderThickness="0" FontSize="12.5" FontWeight="SemiBold" Cursor="Hand"/>
+                            </StackPanel>
+
+                            <!-- Quick Add New Expense Account -->
+                            <Border Grid.Column="2" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1" CornerRadius="8" Padding="10,6">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <TextBlock Text="➕ فتح حساب صرف جديد:" FontSize="12.5" FontWeight="Bold" Foreground="#1e293b" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBox Text="{Binding expenseManagementProberty.NewAccountName, UpdateSourceTrigger=PropertyChanged}" Width="190" Padding="8,5" FontSize="13" VerticalContentAlignment="Center" Margin="0,0,8,0" ToolTip="اكتب اسم الحساب الجديد (مثال: حساب محمد، حساب صيانة، حساب دعاية...)"/>
+                                    <Button Content="إضافة الحساب" Command="{Binding Commands.AddNewAccountCommand}" Background="#d97706" Foreground="White" Padding="12,6" BorderThickness="0" FontSize="12.5" FontWeight="Bold" Cursor="Hand"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Second Row: Date Range & Search within Accounts -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="من تاريخ:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                            <DatePicker Grid.Column="1" SelectedDate="{Binding expenseManagementProberty.StartDate}" Width="145" Margin="0,0,18,0"/>
+                            <TextBlock Grid.Column="2" Text="إلى تاريخ:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                            <DatePicker Grid.Column="3" SelectedDate="{Binding expenseManagementProberty.EndDate}" Width="145" Margin="0,0,20,0"/>
+                            <TextBlock Grid.Column="4" Text="🔍 بحث باسم الحساب:" VerticalAlignment="Center" FontWeight="SemiBold" Margin="0,0,8,0"/>
+                            <TextBox Grid.Column="5" Text="{Binding expenseManagementProberty.AccountSearchText, UpdateSourceTrigger=PropertyChanged}" Width="230" Padding="8,5" VerticalContentAlignment="Center" Margin="0,0,15,0"/>
+                            <CheckBox Grid.Column="7" Content="إظهار الحسابات التي عليها حركات فقط" IsChecked="{Binding expenseManagementProberty.ShowOnlyActiveAccounts}" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="#334155" Cursor="Hand"/>
+                        </Grid>
+                    </Grid>
+                </Border>
+
+                <!-- Inline Edit Account Name Bar (Visible when editing an account name) -->
+                <Border Grid.Row="1" Background="#eff6ff" BorderBrush="#93c5fd" BorderThickness="1.5" CornerRadius="10" Padding="16,10" Margin="0,0,0,12"
+                        Visibility="{Binding expenseManagementProberty.IsEditingAccountName, Converter={StaticResource BoolToVisibilityConverter}}">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="✏️ تعديل اسم الحساب:" FontSize="13.5" FontWeight="Bold" Foreground="#1e40af" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="{Binding expenseManagementProberty.EditingAccountOriginalName}" FontSize="13.5" FontWeight="Bold" Foreground="#dc2626" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                        <TextBlock Text="الاسم الجديد:" FontSize="13" FontWeight="SemiBold" Foreground="#1e293b" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Text="{Binding expenseManagementProberty.EditingAccountNewName, UpdateSourceTrigger=PropertyChanged}" Width="240" Padding="8,5" FontSize="13.5" FontWeight="Bold" VerticalContentAlignment="Center" Margin="0,0,10,0"/>
+                        <Button Content="💾 حفظ التعديل" Command="{Binding Commands.SaveEditAccountCommand}" Background="#16a34a" Foreground="White" Padding="14,6" BorderThickness="0" FontSize="12.5" FontWeight="Bold" Margin="0,0,8,0" Cursor="Hand"/>
+                        <Button Content="✖ إلغاء" Command="{Binding Commands.CancelEditAccountCommand}" Background="#64748b" Foreground="White" Padding="12,6" BorderThickness="0" FontSize="12.5" FontWeight="SemiBold" Cursor="Hand"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- 4 Summary KPI Cards -->
+                <Grid Grid.Row="2" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Background="White" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="10" Padding="16,12" Margin="0,0,8,0">
+                        <StackPanel>
+                            <TextBlock Text="🏦 عدد حسابات المصروفات" FontSize="12.5" Foreground="#64748b" FontWeight="SemiBold"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <TextBlock Text="{Binding expenseManagementProberty.TotalAccountsCount}" FontSize="22" FontWeight="Bold" Foreground="#0f172a"/>
+                                <TextBlock Text=" حساب (النشطة: " FontSize="12.5" Foreground="#64748b" VerticalAlignment="Bottom" Margin="4,0,0,2"/>
+                                <TextBlock Text="{Binding expenseManagementProberty.ActiveAccountsCount}" FontSize="12.5" FontWeight="Bold" Foreground="#0284c7" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                                <TextBlock Text=")" FontSize="12.5" Foreground="#64748b" VerticalAlignment="Bottom" Margin="0,0,0,2"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Background="#fef2f2" BorderBrush="#fecaca" BorderThickness="1" CornerRadius="10" Padding="16,12" Margin="4,0,8,0">
+                        <StackPanel>
+                            <TextBlock Text="💰 إجمالي المنصرف في جميع الحسابات" FontSize="12.5" Foreground="#991b1b" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding expenseManagementProberty.AccountsGrandTotal, StringFormat='{}{0:N0} ريال'}" FontSize="22" FontWeight="Bold" Foreground="#dc2626" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Background="#f0fdf4" BorderBrush="#bbf7d0" BorderThickness="1" CornerRadius="10" Padding="16,12" Margin="4,0,8,0">
+                        <StackPanel>
+                            <TextBlock Text="💵 إجمالي المنصرف نقداً (من الصندوق)" FontSize="12.5" Foreground="#166534" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding expenseManagementProberty.AccountsCashTotal, StringFormat='{}{0:N0} ريال'}" FontSize="22" FontWeight="Bold" Foreground="#15803d" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="3" Background="#f0f9ff" BorderBrush="#bae6fd" BorderThickness="1" CornerRadius="10" Padding="16,12" Margin="4,0,0,0">
+                        <StackPanel>
+                            <TextBlock Text="📱 إجمالي المنصرف عبر المحافظ والبنوك" FontSize="12.5" Foreground="#075985" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding expenseManagementProberty.AccountsWalletTotal, StringFormat='{}{0:N0} ريال'}" FontSize="22" FontWeight="Bold" Foreground="#0284c7" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- FULL-WIDTH CLEAN ACCOUNTS LIST -->
+                <Border Grid.Row="3" Background="White" BorderBrush="#cbd5e1" BorderThickness="1" CornerRadius="12" Padding="0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Header -->
+                        <Border Grid.Row="0" Background="#f8fafc" CornerRadius="12,12,0,0" Padding="20,14" BorderBrush="#e2e8f0" BorderThickness="0,0,0,1">
+                            <StackPanel>
+                                <TextBlock Text="🏦 قائمة وجرد حسابات المصروفات" FontSize="16" FontWeight="Bold" Foreground="#0f172a"/>
+                                <TextBlock Text="يوضح إجمالي ما صُرف لكل حساب نقداً أو عبر المحافظ والبنوك مع إمكانية الصرف المباشر أو تعديل اسم أي حساب" FontSize="12" Foreground="#64748b" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Table Columns Header -->
+                        <Border Grid.Row="1" Background="#f1f5f9" BorderBrush="#cbd5e1" BorderThickness="0,0,0,1" Padding="24,12">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.2*"/>
+                                    <ColumnDefinition Width="0.85*"/>
+                                    <ColumnDefinition Width="1.25*"/>
+                                    <ColumnDefinition Width="1.25*"/>
+                                    <ColumnDefinition Width="1.35*"/>
+                                    <ColumnDefinition Width="0.75*"/>
+                                    <ColumnDefinition Width="1.1*"/>
+                                    <ColumnDefinition Width="220"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="اسم الحساب / جهة الصرف" FontWeight="Bold" FontSize="13.5" Foreground="#1e293b" HorizontalAlignment="Right"/>
+                                <TextBlock Grid.Column="1" Text="عدد العمليات" FontWeight="Bold" FontSize="13.5" Foreground="#1e293b" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="2" Text="المنصرف نقداً" FontWeight="Bold" FontSize="13.5" Foreground="#166534" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="3" Text="عبر المحافظ والبنوك" FontWeight="Bold" FontSize="13.5" Foreground="#075985" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="4" Text="إجمالي المنصرف للحساب" FontWeight="Bold" FontSize="13.5" Foreground="#b91c1c" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="5" Text="النسبة %" FontWeight="Bold" FontSize="13.5" Foreground="#1e293b" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="6" Text="آخر حركة" FontWeight="Bold" FontSize="13.5" Foreground="#1e293b" HorizontalAlignment="Center"/>
+                                <TextBlock Grid.Column="7" Text="إجراءات الحساب" FontWeight="Bold" FontSize="13.5" Foreground="#1e293b" HorizontalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Accounts ListBox -->
+                        <ListBox Grid.Row="2"
+                                 ItemsSource="{Binding expenseManagementProberty.ExpenseAccountsSummary}"
+                                 SelectedItem="{Binding expenseManagementProberty.SelectedExpenseAccount, Mode=TwoWay}"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 Padding="16,8,16,16"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0,3"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="ItemBorder" Background="White" BorderBrush="#e2e8f0" BorderThickness="1" CornerRadius="10" Padding="14,12">
+                                                    <ContentPresenter/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#f8fafc"/>
+                                                        <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#94a3b8"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="ItemBorder" Property="Background" Value="#eff6ff"/>
+                                                        <Setter TargetName="ItemBorder" Property="BorderBrush" Value="#2563eb"/>
+                                                        <Setter TargetName="ItemBorder" Property="BorderThickness" Value="1.5"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2.2*"/>
+                                            <ColumnDefinition Width="0.85*"/>
+                                            <ColumnDefinition Width="1.25*"/>
+                                            <ColumnDefinition Width="1.25*"/>
+                                            <ColumnDefinition Width="1.35*"/>
+                                            <ColumnDefinition Width="0.75*"/>
+                                            <ColumnDefinition Width="1.1*"/>
+                                            <ColumnDefinition Width="220"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Text="{Binding AccountName}" FontSize="14.5" FontWeight="Bold" Foreground="#0f172a" VerticalAlignment="Center" HorizontalAlignment="Right" TextWrapping="Wrap"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding TransactionsCount}" FontSize="14" FontWeight="Bold" Foreground="#334155" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding CashAmount, StringFormat='{}{0:N0} ريال'}" FontSize="13.5" FontWeight="SemiBold" Foreground="#15803d" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding WalletAmount, StringFormat='{}{0:N0} ريال'}" FontSize="13.5" FontWeight="SemiBold" Foreground="#0284c7" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="4" Text="{Binding TotalAmount, StringFormat='{}{0:N0} ريال'}" FontSize="14" FontWeight="Bold" Foreground="#dc2626" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="5" Text="{Binding PercentageText}" FontSize="13" FontWeight="Bold" Foreground="#475569" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="6" Text="{Binding LastTransactionDateText}" FontSize="12.5" Foreground="#64748b" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                        <StackPanel Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="💸 صرف" ToolTip="صرف مبلغ في هذا الحساب"
+                                                    Command="{Binding DataContext.Commands.AddExpenseForSelectedAccountCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Background="#00358c" Foreground="White" Padding="10,5" Margin="3,0" BorderThickness="0" FontSize="12" FontWeight="SemiBold" Cursor="Hand"/>
+                                            <Button Content="✏️ تعديل" ToolTip="تعديل اسم الحساب"
+                                                    Command="{Binding DataContext.Commands.StartEditAccountCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource EditButtonStyle}" Padding="10,5" Margin="3,0" FontSize="12" Cursor="Hand"/>
+                                            <Button Content="🗑️ حذف" ToolTip="حذف الحساب"
+                                                    Command="{Binding DataContext.Commands.DeleteAccountCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource DeleteButtonStyle}" Padding="10,5" Margin="3,0" FontSize="12" Cursor="Hand"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- ========================================================================= -->
+            <!-- 3. Vouchers Section (سندات القبض والصرف)                                   -->
+            <!-- ========================================================================= -->
+            <Grid Grid.Row="1" x:Name="VouchersSection" Visibility="{Binding expenseManagementProberty.IsVouchersVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions><!-- Filters and Actions -->
+                <Border Grid.Row="0" Background="#f8f9fa" Padding="15" CornerRadius="8" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions><!-- Action Buttons -->
+                        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,0,0,10">
+                            <Button Content="➕ إضافة سند" Click="AddVoucherButton_Click" Background="#3498DB" Foreground="White" Padding="12,8" BorderThickness="0" FontSize="13" FontWeight="SemiBold" Margin="0,0,10,0" Cursor="Hand"/>
+                            <Button Content="📊 حفظ كـ Excel" Background="#3498DB" Foreground="White" BorderThickness="0" Padding="12,8" FontSize="13" FontWeight="SemiBold" Click="PrintVoucherReport_Click" Margin="0,0,10,0" Cursor="Hand"/>
+                            <Button Content="🔄 تحديث" Command="{Binding Commands.LoadVouchersCommand}" Background="#2ECC71" Foreground="White" Padding="12,8" BorderThickness="0" FontSize="13" FontWeight="SemiBold" Margin="0,0,10,0" Cursor="Hand"/>
+                        </StackPanel><!-- Filters -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="من:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <DatePicker Grid.Column="1" SelectedDate="{Binding expenseManagementProberty.StartDate}" Width="140" Margin="0,0,15,0"/>
+                            <TextBlock Grid.Column="2" Text="إلى:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <DatePicker Grid.Column="3" SelectedDate="{Binding expenseManagementProberty.EndDate}" Width="140" Margin="0,0,15,0"/>
+                            <TextBlock Grid.Column="4" Text="نوع السند:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <ComboBox Grid.Column="5" ItemsSource="{Binding expenseManagementProberty.VoucherTypeFilterItems}" 
+                                      SelectedItem="{Binding expenseManagementProberty.SelectedVoucherTypeItem}" 
+                                      DisplayMemberPath="DisplayName"
+                                      Width="160" Margin="0,0,15,0"/>
+                            <Button Grid.Column="6" Content="✖ مسح الفلتر" Command="{Binding Commands.ClearVoucherFiltersCommand}" Background="#95a5a6" Foreground="White" Padding="10,6" BorderThickness="0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Left" Cursor="Hand"/>
+                        </Grid>
+                    </Grid>
+                </Border><!-- Summary -->
+                <Border Grid.Row="1" Background="#e8f0fe" Padding="15" CornerRadius="8" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding expenseManagementProberty.TotalReceipts, StringFormat=&apos;إجمالي القبض: {0:N0} ريال&apos;}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding expenseManagementProberty.TotalPayments, StringFormat=&apos;إجمالي الصرف: {0:N0} ريال&apos;}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding expenseManagementProberty.NetAmount, StringFormat=&apos;صافي المبلغ: {0:N0} ريال&apos;}"/>
+                    </Grid>
+                </Border><!-- Vouchers List -->
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!-- Table Header -->
+                    <Border Grid.Row="0" Background="#f8f9fa" BorderBrush="#e9ecef" BorderThickness="0,1,0,1" Padding="25,15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="95"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="135"/>
+                                <ColumnDefinition Width="125"/>
+                                <ColumnDefinition Width="105"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="180"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="رقم السند" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                            <TextBlock Grid.Column="1" Text="النوع" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="2" Text="البيان / المستفيد" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                            <TextBlock Grid.Column="3" Text="جهة الصرف / القبض" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="4" Text="المبلغ" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="5" Text="التاريخ" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Column="6" Text="الملاحظات" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                            <TextBlock Grid.Column="7" Text="الإجراءات" FontWeight="Bold" FontSize="14" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <!-- ListBox -->
+                    <ListBox Grid.Row="1" ItemsSource="{Binding expenseManagementProberty.Vouchers}" 
+                             SelectedItem="{Binding SelectedVoucher}"
+                             Background="Transparent" BorderThickness="0" 
+                             Padding="25,0,25,25"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                             VirtualizingStackPanel.IsVirtualizing="True"
+                             VirtualizingStackPanel.VirtualizationMode="Recycling">
+                        <ListBox.ItemContainerStyle>
+                            <StaticResource ResourceKey="TableListItemStyle"/>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" BorderBrush="#e9ecef" BorderThickness="0,1,0,0" Padding="0,14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="140"/>
+                                            <ColumnDefinition Width="95"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="135"/>
+                                            <ColumnDefinition Width="125"/>
+                                            <ColumnDefinition Width="105"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="180"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <TextBlock Grid.Column="0" Text="{Binding VoucherNumber}" FontWeight="SemiBold" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding TypeText}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="2" Text="{Binding CustomerName}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding PaymentMethodText}" FontSize="13" FontWeight="SemiBold" Foreground="#0284c7" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="4" Text="{Binding Amount, StringFormat=&apos;{}{0:N0} ريال&apos;}" FontSize="13" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="5" Text="{Binding VoucherDate, StringFormat=&apos;{}{0:yyyy-MM-dd}&apos;}" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Column="6" Text="{Binding Notes}" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="#6c757d" TextTrimming="CharacterEllipsis"/>
+                                        
+                                        <StackPanel Grid.Column="7" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <Button Content="✏️ تعديل" Command="{Binding DataContext.Commands.EditVoucherCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource EditButtonStyle}" Padding="12,8" Margin="5,0" FontSize="13" Cursor="Hand"/>
+                                            <Button Content="🗑️ حذف" Command="{Binding DataContext.Commands.DeleteVoucherCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Style="{StaticResource DeleteButtonStyle}" Padding="12,8" Margin="5,0" FontSize="13" Cursor="Hand"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

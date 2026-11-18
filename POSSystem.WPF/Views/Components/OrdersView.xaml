@@ -1,0 +1,317 @@
+﻿<UserControl x:Class="POSSystem.WPF.Views.Components.OrdersView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries><!-- Order Status Color Converter -->
+            <Style x:Key="OrderStatusStyle" TargetType="TextBlock">
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="مكتمل">
+                        <Setter Property="Foreground" Value="#28a745"/>
+                    </Trigger>
+                    <Trigger Property="Text" Value="قيد التحضير">
+                        <Setter Property="Foreground" Value="#007bff"/>
+                    </Trigger>
+                    <Trigger Property="Text" Value="جاهز للتسليم">
+                        <Setter Property="Foreground" Value="#fd7e14"/>
+                    </Trigger>
+                    <Trigger Property="Text" Value="قيد التوصيل">
+                        <Setter Property="Foreground" Value="#6f42c1"/>
+                    </Trigger>
+                    <Trigger Property="Text" Value="ملغي">
+                        <Setter Property="Foreground" Value="#dc3545"/>
+                    </Trigger>
+                    <Trigger Property="Text" Value="مدفوع">
+                        <Setter Property="Foreground" Value="#20c997"/>
+                    </Trigger>
+                    <Trigger Property="Text" Value="مرتجع">
+                        <Setter Property="Foreground" Value="#dc3545"/>
+                    </Trigger>
+                    <Trigger Property="Text" Value="مرتجع جزئي">
+                        <Setter Property="Foreground" Value="#dc3545"/>
+                    </Trigger>
+                </Style.Triggers>
+            </Style><!-- Order Card Style -->
+            <Style x:Key="OrderCardStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Margin" Value="0,8"/>
+                <Setter Property="Padding" Value="20"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.08" BlurRadius="8"/>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Effect">
+                            <Setter.Value>
+                                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="4" Opacity="0.15" BlurRadius="12"/>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>
+                    <DataTrigger Binding="{Binding StatusText}" Value="مرتجع">
+                        <Setter Property="Background" Value="#fff0f0"/>
+                        <Setter Property="BorderBrush" Value="#ffcdd2"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding StatusText}" Value="مرتجع جزئي">
+                        <Setter Property="Background" Value="#fff5e6"/>
+                        <Setter Property="BorderBrush" Value="#ffe0b2"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="White" Margin="0,15,0,15" CornerRadius="15,15,15,15">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions><!-- Main Orders Content -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions><!-- Orders Header -->
+                <Border Grid.Row="0" CornerRadius="15,15,0,0" Padding="20,15">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#316FF6" Offset="0"/>
+                            <GradientStop Color="#1565C0" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions><!-- Back Button -->
+                        <Button Grid.Column="0" Content="←" Background="Transparent" BorderThickness="0" FontSize="24" FontWeight="Bold" Foreground="White" Width="40" Height="40" Click="BackToProducts_Click" Margin="0,0,15,0" Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#0D47A1"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button><!-- Title -->
+                        <TextBlock Grid.Column="1" Text="📅 سجل الطلبات" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="White" VerticalAlignment="Center">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.2"/>
+                            </TextBlock.Effect>
+                        </TextBlock><!-- Refresh Button -->
+                        <Button Grid.Column="2" Content="🔄" Background="Transparent" BorderThickness="0" FontSize="20" Foreground="White" Width="40" Height="40" Click="RefreshOrders_Click" ToolTip="تحديث الطلبات" Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#0D47A1"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Border><!-- Search and Filter Bar -->
+                <Border Grid.Row="1" Background="#ffffff" Padding="20,15" BorderBrush="#e9ecef" BorderThickness="0,0,0,1">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions><!-- Search Box -->
+                        <Border Grid.Column="0" Background="#f8f9fa" CornerRadius="8,8,8,8" Padding="15,10" Margin="0,0,15,0">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="🔍" FontSize="14" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBox Grid.Column="1" Text="{Binding ordersProberty.SearchText, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" BorderThickness="0" FontSize="14" VerticalAlignment="Center" Background="Transparent"/>
+                            </Grid>
+                        </Border><!-- Date Filter -->
+                        <ComboBox Grid.Column="1" SelectedItem="{Binding ordersProberty.SelectedDateFilter}" ItemsSource="{Binding ordersProberty.DateFilterOptions}" Width="120" Margin="0,0,15,0" Background="#f8f9fa" BorderBrush="#dee2e6" FontSize="12" Height="40" Padding="10,0"/><!-- Status Filter -->
+                        <ComboBox Grid.Column="2" SelectedItem="{Binding ordersProberty.SelectedStatusFilter}" ItemsSource="{Binding ordersProberty.StatusFilterOptions}" Width="120" Margin="0,0,15,0" Background="#f8f9fa" BorderBrush="#dee2e6" FontSize="12" Height="40" Padding="10,0"/><!-- Payment Method Filter -->
+                        <ComboBox Grid.Column="3" SelectedItem="{Binding ordersProberty.SelectedPaymentFilter}" ItemsSource="{Binding ordersProberty.PaymentFilterOptions}" Width="120" Background="#f8f9fa" BorderBrush="#dee2e6" FontSize="12" Height="40" Padding="10,0"/>
+                    </Grid>
+                </Border><!-- Orders List -->
+                <ScrollViewer Grid.Row="2" Style="{StaticResource SlimScrollViewerStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Margin="20">
+                    <StackPanel><!-- Today's Statistics -->
+                        <Border Background="#e8f5e8" CornerRadius="12,12,12,12" Padding="20,15" Margin="0,0,0,20">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                    <TextBlock Text="إجمالي الطلبات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ordersProberty.TotalOrdersToday}" FontSize="18" FontWeight="Bold" Foreground="#01922a" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Left" Margin="87,0,0,0" Width="442" Grid.ColumnSpan="2">
+                                    <TextBlock Text="المكتملة" FontSize="12" Foreground="#6c757d" RenderTransformOrigin="0.488,0.586" TextAlignment="Center" Height="21" Width="210">
+                                        <TextBlock.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform/>
+                                                <SkewTransform AngleX="0"/>
+                                                <RotateTransform/>
+                                                <TranslateTransform X="0"/>
+                                            </TransformGroup>
+                                        </TextBlock.RenderTransform>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding ordersProberty.CompletedOrdersToday}" FontSize="18" FontWeight="Bold" Foreground="#28a745" HorizontalAlignment="Center"/>
+                                </StackPanel><!--<StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock Text="قيد التحضير"
+                                        FontSize="12"
+                                        Foreground="#6c757d"
+                                        HorizontalAlignment="Center" />
+                                    <TextBlock Text="{Binding PreparingOrdersToday}"
+                                        FontSize="18"
+                                        FontWeight="Bold"
+                                        Foreground="#007bff"
+                                        HorizontalAlignment="Center" />
+                                </StackPanel>-->
+                                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                                    <TextBlock Text="إجمالي المبيعات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="{Binding ordersProberty.TotalSalesToday, StringFormat=&apos;YER-0 ريال&apos;}" FontSize="18" FontWeight="Bold" Foreground="#01922a" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border><!-- Orders List (paginated) -->
+                        <ItemsControl ItemsSource="{Binding ordersProberty.PagedFilteredOrders}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource OrderCardStyle}" MouseLeftButtonUp="OrderCard_MouseLeftButtonUp" Tag="{Binding}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions><!-- Order Icon -->
+                                            <Border Grid.Column="0" Background="#f8f9fa" CornerRadius="8,8,8,8" Width="50" Height="50" Margin="0,0,15,0">
+                                                <TextBlock Text="📋" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border><!-- Order Details -->
+                                            <StackPanel Grid.Column="1">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="{Binding OrderNumber}" FontSize="16" FontWeight="Bold" Foreground="#2c3e50"/>
+                                                        <TextBlock Text="{Binding CreatedAt, StringFormat=&apos;dd/MM/yyyy hh:mm tt&apos;}" FontSize="12" Foreground="#6c757d" Margin="0,2,0,0"/>
+                                                        <TextBlock Text="{Binding CustomerName, FallbackValue=&apos;عميل مباشر&apos;}" FontSize="12" Foreground="#6c757d"/>
+                                                    </StackPanel>
+                                                    <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                                        <TextBlock Text="{Binding StatusText}" FontSize="14" FontWeight="SemiBold" Style="{StaticResource OrderStatusStyle}"/>
+                                                        <TextBlock Text="{Binding PaymentMethodText}" FontSize="12" Foreground="#6c757d" Margin="0,2,0,0"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </StackPanel><!-- Order Amount -->
+                                            <StackPanel Grid.Column="2" HorizontalAlignment="Center" Margin="15,0">
+                                                <TextBlock Text="{Binding Total, StringFormat=&apos;YER-0 ريال&apos;}" FontSize="18" FontWeight="Bold" Foreground="#01922a" HorizontalAlignment="Center"/>
+                                                <TextBlock FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center">
+                                                    <TextBlock.Text>
+                                                        <MultiBinding StringFormat="{}{0} منتج">
+                                                            <Binding Path="ItemsCount"/>
+                                                        </MultiBinding>
+                                                    </TextBlock.Text>
+                                                </TextBlock>
+                                            </StackPanel><!-- Action Buttons -->
+                                            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="15,0,0,0">
+                                                <Button Content="👁️" Background="Transparent" BorderThickness="0" FontSize="14" Width="30" Height="30" Click="ViewOrderDetails_Click" Tag="{Binding}" ToolTip="عرض التفاصيل"/>
+                                                <Button Content="🖨️" Background="Transparent" BorderThickness="0" FontSize="14" Width="30" Height="30" Click="ReprintOrder_Click" Tag="{Binding}" ToolTip="إعادة طباعة" Margin="5,0,0,0"/>
+                                                <Button Content="❌ إلغاء / تعديل" Background="#fef2f2" Foreground="#dc2626" BorderBrush="#fecaca" BorderThickness="1" FontSize="12" FontWeight="Bold" Padding="8,4" Height="30" Click="CancelOrder_Click" Tag="{Binding}" ToolTip="إلغاء الفاتورة أو إعادة فتحها للتعديل في الكاشير" Margin="6,0,0,0" Cursor="Hand">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding CanCancel}" Value="False">
+                                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button><!-- Complete Button -->
+                                                <Button Content="✅" Background="Transparent" BorderThickness="0" FontSize="14" Width="30" Height="30" Command="{Binding DataContext.Commands.CompleteOrderCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Tag="{Binding}" ToolTip="اكتمال الطلب" Margin="5,0,0,0">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding StatusText}" Value="قيد التجهيز">
+                                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl><!-- Pagination Controls -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0" VerticalAlignment="Center">
+                            <Button Content="← السابق" Command="{Binding ordersProberty.PrevPageCommand}" Width="90" Height="36" Margin="0,0,10,0" Background="#316FF6" Foreground="White">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <TextBlock Text="{Binding ordersProberty.PageInfo}" VerticalAlignment="Center" FontWeight="SemiBold" Margin="5,0"/>
+                            <Button Content="التالي →" Command="{Binding ordersProberty.NextPageCommand}" Width="90" Height="36" Margin="10,0,0,0" Background="#316FF6" Foreground="White">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <ComboBox ItemsSource="{Binding ordersProberty.PageSizeOptions}" SelectedItem="{Binding ordersProberty.PageSize}" Width="80" Margin="20,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel><!-- No Orders Message -->
+                        <Border Background="#f8f9fa" CornerRadius="12,12,12,12" Padding="40,30" Margin="0,20,0,0" Visibility="{Binding ordersProberty.HasOrders, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="📋" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                                <TextBlock Text="لا توجد طلبات" FontSize="18" FontWeight="Bold" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                <TextBlock Text="لم يتم العثور على طلبات تطابق معايير البحث" FontSize="14" Foreground="#6c757d" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

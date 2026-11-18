@@ -1,0 +1,124 @@
+﻿<UserControl x:Class="POSSystem.WPF.Views.Popups.BankDepositFormControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:converters="clr-namespace:POSSystem.WPF.Converters" Width="560" MaxHeight="720" Background="Transparent" FlowDirection="RightToLeft">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#f8f9fa" CornerRadius="16" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Background="White" Padding="22,18" BorderBrush="#e9ecef" BorderThickness="0,0,0,1">
+                <Grid>
+                    <TextBlock Text="سند إيداع بنكي" FontSize="20" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Button Content="إغلاق" HorizontalAlignment="Left" Background="Transparent" BorderThickness="0" FontSize="14" Foreground="#6c757d" Cursor="Hand" Padding="10,4" Click="CloseButton_Click"/>
+                </Grid>
+            </Border>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="22,18">
+                <StackPanel>
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="المبلغ (إلزامي)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding FormAmountText, UpdateSourceTrigger=PropertyChanged}" Padding="12,10" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="اسم المودع (إلزامي)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding FormDepositorName, UpdateSourceTrigger=PropertyChanged}" Padding="12,10" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="مصدر الإيداع (إلزامي)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,6"/>
+                            <ComboBox ItemsSource="{Binding DepositSourceOptions}" Text="{Binding FormSelectedSource, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="10,8" FontSize="14" IsEditable="True"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="رقم المرجع / العملية (اختياري - يتولد تلقائياً عند تركه فارغاً)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding FormReferenceNumber, UpdateSourceTrigger=PropertyChanged}" Padding="12,10" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="تاريخ الإيداع (إلزامي)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,6"/>
+                            <DatePicker SelectedDate="{Binding FormDepositDate, Mode=TwoWay}" FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="المرفق — صورة أو ملف (اختياري)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,6"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                <Button Content="اختيار ملف" Command="{Binding BrowseAttachmentCommand}" Padding="14,8" Margin="0,0,10,0" Background="#00358c" Foreground="White" BorderThickness="0" Cursor="Hand">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <TextBlock Text="{Binding FormAttachmentFileName, TargetNullValue='لم يُختَر ملف'}" FontSize="13" Foreground="#6c757d" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="300"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,14" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="ملاحظات (اختياري)" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,6"/>
+                            <TextBox Text="{Binding FormNotes, UpdateSourceTrigger=PropertyChanged}" Padding="12,10" FontSize="14" MinHeight="72" TextWrapping="Wrap" AcceptsReturn="True"/>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock Text="{Binding FormErrorText}" Foreground="#dc3545" FontSize="13" TextWrapping="Wrap" Margin="0,0,0,10" Visibility="{Binding FormErrorText, Converter={StaticResource StringToVisibilityConverter}}"/>
+                </StackPanel>
+            </ScrollViewer>
+            <Border Grid.Row="2" Background="White" Padding="18,14" BorderBrush="#e9ecef" BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="إلغاء" Click="CloseButton_Click" Padding="22,10" Margin="0,0,12,0" Background="#6c757d" Foreground="White" BorderThickness="0" Cursor="Hand" MinWidth="110">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="حفظ السند" Click="SaveButton_Click" Padding="22,10" Background="#00358c" Foreground="White" BorderThickness="0" FontWeight="SemiBold" Cursor="Hand" MinWidth="140">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

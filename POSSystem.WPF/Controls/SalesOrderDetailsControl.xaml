@@ -1,0 +1,167 @@
+﻿<UserControl x:Class="POSSystem.WPF.Controls.SalesOrderDetailsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:POSSystem.WPF.Converters"
+             mc:Ignorable="d"
+             Background="Transparent"
+             FlowDirection="RightToLeft"
+             Width="650" Height="750">
+    <UserControl.Resources>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <Border Background="White" CornerRadius="15" Margin="20">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="10" Opacity="0.15" BlurRadius="20"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Background="#00358c" CornerRadius="15,15,0,0" Padding="25,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding OrderNumber}" FontSize="20" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="مراجعة تفاصيل الفاتورة" FontSize="14" Foreground="White" Opacity="0.9" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="X" Background="Transparent" BorderThickness="0" FontSize="18" FontWeight="Bold" Foreground="White" Width="30" Height="30" Click="CloseButton_Click" Cursor="Hand"/>
+                </Grid>
+            </Border>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="25">
+                <StackPanel>
+                    <Border Background="#fff3cd" CornerRadius="8" Padding="12" Margin="0,0,0,15"
+                            Visibility="{Binding IsHighRisk, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <TextBlock Text="{Binding RiskLabel, StringFormat=فاتورة عالية المخاطر: {0}}" FontWeight="Bold" Foreground="#856404"/>
+                    </Border>
+
+                    <Border Background="#f8f9fa" CornerRadius="12" Padding="20,15" Margin="0,0,0,15">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="التاريخ والوقت" FontSize="12" Foreground="#6c757d"/>
+                                <TextBlock Text="{Binding CreatedAt, StringFormat='dd/MM/yyyy hh:mm tt'}" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,12"/>
+                                <TextBlock Text="الكاشير" FontSize="12" Foreground="#6c757d"/>
+                                <TextBlock Text="{Binding User.Name}" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="العميل" FontSize="12" Foreground="#6c757d"/>
+                                <TextBlock Text="{Binding CustomerDisplayName}" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,12"/>
+                                <TextBlock Text="طريقة الدفع" FontSize="12" Foreground="#6c757d"/>
+                                <TextBlock Text="{Binding PaymentMethodDisplay}" FontSize="14" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- تفاصيل الإيداع / المحفظة الإلكترونية -->
+                    <Border Background="#eef4ff" BorderBrush="#b9d5fd" BorderThickness="1" CornerRadius="12" Padding="18,14" Margin="0,0,0,15"
+                            Visibility="{Binding IsDepositPayment, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <StackPanel>
+                            <TextBlock Text="تفاصيل الإيداع والمحفظة" FontWeight="Bold" FontSize="14" Foreground="#00358c" Margin="0,0,0,10"/>
+                            <UniformGrid Columns="2">
+                                <StackPanel Margin="0,0,0,8">
+                                    <TextBlock Text="الجهة / المحفظة:" FontSize="12" Foreground="#6c757d"/>
+                                    <TextBlock Text="{Binding DepositBankOrWallet}" FontSize="13" FontWeight="SemiBold" Foreground="#1e293b"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,8">
+                                    <TextBlock Text="عملة الإيداع:" FontSize="12" Foreground="#6c757d"/>
+                                    <TextBlock Text="{Binding DepositCurrency}" FontSize="13" FontWeight="SemiBold" Foreground="#1e293b"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,8">
+                                    <TextBlock Text="المبلغ المدفوع بالعملة:" FontSize="12" Foreground="#6c757d"/>
+                                    <TextBlock Text="{Binding DepositAmount, StringFormat=N0}" FontSize="14" FontWeight="Bold" Foreground="#00358c"/>
+                                </StackPanel>
+                                <StackPanel Margin="0,0,0,8">
+                                    <TextBlock Text="رقم الإشعار / المرجع:" FontSize="12" Foreground="#6c757d"/>
+                                    <TextBlock Text="{Binding DepositReferenceNumber}" FontSize="13" FontWeight="SemiBold" Foreground="#1e293b"/>
+                                </StackPanel>
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock Text="المنتجات المباعة" FontSize="16" FontWeight="Bold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+
+                    <ItemsControl ItemsSource="{Binding OrderItems}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" CornerRadius="8" Padding="12" Margin="0,0,0,8" BorderBrush="#e9ecef" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                            <TextBlock Text="{Binding Size}" FontSize="12" Foreground="#00358c" Visibility="{Binding Size, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                            <TextBlock Text="{Binding Quantity, StringFormat='الكمية: {0}'}" FontSize="12" Foreground="#6c757d"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="{Binding TotalPrice, StringFormat='{}{0:N0} ريال'}" FontWeight="Bold" Foreground="#00358c" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Border Background="#f8f9fa" CornerRadius="12" Padding="20,15" Margin="0,15,0,0">
+                        <StackPanel HorizontalAlignment="Left" Width="320">
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="230"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="المجموع الفرعي" HorizontalAlignment="Right" FontSize="14" Foreground="#2c3e50"/>
+                                <TextBlock Grid.Column="1" Text="{Binding SubTotal, StringFormat='{}{0:N0} ريال'}" HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="260"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="الخصومات" HorizontalAlignment="Right" FontSize="14" Foreground="#2c3e50"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Discount, StringFormat='{}{0:N0} ريال'}" HorizontalAlignment="Left" Foreground="#d63031" FontSize="14" FontWeight="SemiBold"/>
+                            </Grid>
+
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="240"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="رسوم الخدمة" HorizontalAlignment="Right" FontSize="14" Foreground="#6c757d"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ServiceCharge, StringFormat='{}{0:N0} ريال'}" HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50"/>
+                            </Grid>
+
+                            <Separator Margin="0,9" Background="#e9ecef"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="210"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="الإجمالي النهائي" FontWeight="Bold" FontSize="16" HorizontalAlignment="Right" Foreground="#2c3e50" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Total, StringFormat='{}{0:N0} ريال'}" FontWeight="Bold" FontSize="19" Foreground="#00358c" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Row="2" Background="#f8f9fa" CornerRadius="0,0,15,15" Padding="20" BorderBrush="#e9ecef" BorderThickness="0,1,0,0">
+                <Button Content="إعادة طباعة" Background="#00358c" Foreground="White" Padding="20,10" Click="ReprintButton_Click" HorizontalAlignment="Left"/>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

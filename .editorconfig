@@ -1,0 +1,9 @@
+root = true
+
+# All C#, XAML, XML, JSON, and config files must be saved with UTF-8 BOM to prevent Arabic text corruption in Visual Studio
+[*.{cs,xaml,xml,json,config,props,targets}]
+charset = utf-8-bom
+end_of_line = crlf
+indent_style = space
+indent_size = 4
+

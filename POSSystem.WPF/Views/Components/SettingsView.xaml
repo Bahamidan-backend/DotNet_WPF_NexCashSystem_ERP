@@ -1,0 +1,335 @@
+<UserControl x:Class="POSSystem.WPF.Views.Components.SettingsView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries><!-- Settings Card Style -->
+            <Style x:Key="SettingsCardStyle" TargetType="Border">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="CornerRadius" Value="12"/>
+                <Setter Property="Margin" Value="0,10"/>
+                <Setter Property="Padding" Value="25,20"/>
+                <Setter Property="Effect">
+                    <Setter.Value>
+                        <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.08" BlurRadius="8"/>
+                    </Setter.Value>
+                </Setter>
+            </Style><!-- Settings Section Style -->
+            <Style x:Key="SettingsSectionStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="18"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Foreground" Value="#2c3e50"/>
+                <Setter Property="Margin" Value="0,0,0,15"/>
+            </Style><!-- Settings Item Style -->
+            <Style x:Key="SettingsItemStyle" TargetType="Grid">
+                <Setter Property="Margin" Value="0,0,0,15"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="White" Margin="0,15,0,15">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions><!-- Main Settings Content -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions><!-- Settings Header -->
+                <Border Grid.Row="0" CornerRadius="15,15,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions><!-- Back Button -->
+                        <Button Grid.Column="0" Content="←" Background="Transparent" FontSize="18" FontWeight="Bold" Foreground="#316FF6" Width="40" Height="40" Click="BackToProducts_Click" ToolTip="العودة إلى القائمة الرئيسية" Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#E3F2FD"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button><!-- Title and Save Button -->
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="⚙️ إعدادات الكاشير" FontSize="22" FontWeight="Bold" Foreground="#2c3e50" VerticalAlignment="Center" Margin="0,0,20,0">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" Opacity="0.1" BlurRadius="3"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <Button Content="💾 حفظ" Background="#316FF6" Foreground="White" FontSize="14" FontWeight="SemiBold" Height="40" Width="100" Click="SaveSettings_Click" ToolTip="حفظ الإعدادات" Cursor="Hand">
+                                <Button.Effect>
+                                    <DropShadowEffect Color="#316FF6" Direction="270" ShadowDepth="3" Opacity="0.3" BlurRadius="8"/>
+                                </Button.Effect>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" BorderThickness="0">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#1565C0"/>
+                                                            <Setter Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <ScaleTransform ScaleX="1.05" ScaleY="1.05"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter Property="Background" Value="#0D47A1"/>
+                                                            <Setter Property="RenderTransform">
+                                                                <Setter.Value>
+                                                                    <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </Border><!-- Settings Content -->
+                <ScrollViewer Grid.Row="1" Style="{StaticResource SlimScrollViewerStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden" Margin="20">
+                    <StackPanel><!-- Profile Settings -->
+                        <Border Style="{StaticResource SettingsCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="👤 إعدادات الملف الشخصي" Style="{StaticResource SettingsSectionStyle}"/>
+                                <Grid Style="{StaticResource SettingsItemStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                        <TextBlock Text="الاسم الكامل" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <TextBox Text="{Binding UserName, UpdateSourceTrigger=PropertyChanged}" Name="NameTXT" Style="{StaticResource ModernTextBoxStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                        <TextBlock Text="البريد الإلكتروني" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <TextBox Text="{Binding UserEmail, UpdateSourceTrigger=PropertyChanged}" Name="EmailTxt" Style="{StaticResource ModernTextBoxStyle}"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Style="{StaticResource SettingsItemStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                        <TextBlock Text="كلمة المرور الحالية" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <PasswordBox x:Name="CurrentPasswordBox" Style="{StaticResource ModernPasswordBoxStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                        <TextBlock Text="كلمة المرور الجديدة" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <PasswordBox x:Name="NewPasswordBox" Style="{StaticResource ModernPasswordBoxStyle}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border><!-- POS Settings -->
+                        <Border Style="{StaticResource SettingsCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="💰 إعدادات نقاط البيع" Style="{StaticResource SettingsSectionStyle}"/>
+                                <Grid Style="{StaticResource SettingsItemStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                        <TextBlock Text="سعر الصرف" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <TextBox Text="{Binding settingsProberty.ExchangeRate, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                        <TextBlock Text="العملة الافتراضية" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <ComboBox SelectedItem="{Binding settingsProberty.Currency}" FontSize="14" Background="#f8f9fa" Padding="10,8" BorderThickness="0" Height="40"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Style="{StaticResource SettingsItemStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                        <TextBlock Text="خيارات الطباعة التلقائية عند حفظ الفاتورة" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <CheckBox IsChecked="{Binding settingsProberty.PrintCustomerReceipt}" Content="طباعة إيصال الزبون تلقائياً" FontSize="14" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                        <CheckBox IsChecked="{Binding settingsProberty.PrintWaiterReceipt}" Content="طباعة نسخة إضافية للمباشر مع فاتورة الزبون (فاتورتين)" FontSize="13.5" FontWeight="SemiBold" Foreground="#00358c" VerticalAlignment="Center" Margin="0,6,0,0"/>
+                                        <CheckBox IsChecked="{Binding settingsProberty.PrintKitchenReceipt}" Content="طباعة إيصال المطبخ تلقائياً" FontSize="14" VerticalAlignment="Center" Margin="0,6,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                        <TextBlock Text="طابعة الكاشير (فاتورة الزبون)" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <ComboBox ItemsSource="{Binding InstalledPrinters}"
+                                                  Text="{Binding settingsProberty.PrinterName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  IsEditable="True"
+                                                  FontSize="14"
+                                                  Background="#f8f9fa"
+                                                  BorderBrush="#cbd5e1"
+                                                  BorderThickness="1"
+                                                  Padding="10,8"
+                                                  Height="40"
+                                                  Margin="0,0,0,10"
+                                                  ToolTip="اختر الطابعة الحرارية أو طابعة الويندوز المعتمدة لفاتورة الزبون"/>
+                                        <Button Content="🧪 اختبار طباعة فاتورة الزبون الآن"
+                                                Command="{Binding Commands.TestPrinterCommand}"
+                                                Background="#00358c"
+                                                Foreground="White"
+                                                FontSize="13"
+                                                FontWeight="Bold"
+                                                Height="38"
+                                                Padding="15,6"
+                                                BorderThickness="0"
+                                                Cursor="Hand"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border><!-- Display Settings -->
+                        <Border Style="{StaticResource SettingsCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="🖥️ إعدادات العرض (واجهة الكاشير)" Style="{StaticResource SettingsSectionStyle}"/>
+                                <Grid Style="{StaticResource SettingsItemStyle}">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="20"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <StackPanel Grid.Row="0" Grid.Column="0">
+                                        <TextBlock Text="حجم واجهة الكاشير" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Slider Name="ScalingSlider" 
+                                                    Minimum="0.5" Maximum="1.5" 
+                                                    Value="{Binding settingsProberty.CashierScale}" 
+                                                    TickFrequency="0.1" IsSnapToTickEnabled="True"
+                                                    VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Value, ElementName=ScalingSlider, StringFormat={}{0:P0}}" 
+                                                           FontSize="16" FontWeight="Bold" Foreground="#316FF6"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <TextBlock Text="يمكنك تصغير الواجهة حتى 50% أو تكبيرها حتى 150%" FontSize="12" Foreground="#6c757d" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Row="0" Grid.Column="2">
+                                        <TextBlock Text="حجم خط الأصناف" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Slider Name="FontSizeSlider" 
+                                                    Minimum="10" Maximum="30" 
+                                                    Value="{Binding settingsProberty.ItemFontSize}" 
+                                                    TickFrequency="1" IsSnapToTickEnabled="True"
+                                                    VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Value, ElementName=FontSizeSlider}" 
+                                                           FontSize="16" FontWeight="Bold" Foreground="#316FF6"/>
+                                                <TextBlock Text=" px" FontSize="12" Foreground="Gray" VerticalAlignment="Bottom" Margin="2,0,0,3"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <TextBlock Text="يتحكم في حجم خط اسم الصنف والسعر والكمية" FontSize="12" Foreground="#6c757d" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+
+                                    <!-- New Row for Display Shape -->
+                                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3">
+                                        <TextBlock Text="طريقة عرض أحجام المنتجات" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+                                        <CheckBox IsChecked="{Binding settingsProberty.SeparateProductSizes}" Content="فصل أحجام المنتجات (عرض كل حجم كبطاقة منتج مستقلة)" FontSize="14" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                        <TextBlock Text="عند التفعيل، سيظهر كل خيار حجم كبطاقة منفصلة. عند التعطيل، ستظهر خيارات الحجم داخل بطاقة المنتج." FontSize="12" Foreground="#6c757d" Margin="0,5,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border><!-- Security Settings -->
+                        <Border Style="{StaticResource SettingsCardStyle}">
+                            <StackPanel>
+                                <TextBlock Text="🔒 إعدادات الأمان" Style="{StaticResource SettingsSectionStyle}"/>
+                                <Grid Style="{StaticResource SettingsItemStyle}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                        <TextBlock Text="مدة انتهاء الجلسة (دقيقة)" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <TextBox Text="{Binding settingsProberty.SessionTimeout, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="15,0,0,0">
+                                        <TextBlock Text="نسخ احتياطي تلقائي" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                        <CheckBox IsChecked="{Binding settingsProberty.AutoBackup}" Content="نسخ احتياطي يومي" FontSize="14" VerticalAlignment="Center" Margin="0,5,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer><!-- Action Buttons - Outside ScrollViewer -->
+                <Border Grid.Row="2" Background="White" Margin="20,10,20,20" Padding="20" CornerRadius="12">
+                    <StackPanel>
+                        <TextBlock Text="🔧 إجراءات النظام" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="🔄 إعادة تشغيل" Background="#316FF6" Foreground="White" FontSize="14" FontWeight="SemiBold" Height="45" Margin="0,0,10,0" Click="RestartSystem_Click" ToolTip="إعادة تشغيل النظام">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Grid.Column="1" Content="🗑️ مسح البيانات" Background="#dc3545" Foreground="White" FontSize="14" FontWeight="SemiBold" Height="45" Margin="5,0" Click="ClearData_Click" ToolTip="مسح جميع البيانات">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button Grid.Column="2" Content="📤 تصدير البيانات" Background="#27AE60" Foreground="White" FontSize="14" FontWeight="SemiBold" Height="45" Margin="10,0,0,0" Click="ExportData_Click" ToolTip="تصدير البيانات إلى ملف">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

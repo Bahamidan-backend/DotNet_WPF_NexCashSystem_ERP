@@ -1,0 +1,305 @@
+﻿<Window x:Class="POSSystem.WPF.Views.Popups.EditProductPopup" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="تعديل منتج" Width="600" Height="700" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" Background="#f8f9fa" FlowDirection="RightToLeft">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Border Background="#f8f9fa" CornerRadius="16" ClipToBounds="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions><!-- Header -->
+        <Border Grid.Row="0" Background="White" CornerRadius="0,0,15,15" Padding="25,20" Margin="0,0,0,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+            </Border.Effect>
+            <StackPanel>
+                <TextBlock Text="✏️ تعديل منتج" FontSize="24" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                <TextBlock Text="تحديث تفاصيل المنتج الحالي" FontSize="14" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border><!-- Form Content -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="25,0,25,0">
+            <StackPanel><!-- Product Image Section -->
+                <Border Background="White" CornerRadius="12,12,12,12" Padding="20" Margin="0,0,0,20">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" Opacity="0.03" BlurRadius="5"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Text="🖼️ صورة المنتج" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+                        <Border Background="#f8f9fa" Width="120" Height="120" HorizontalAlignment="Center" CornerRadius="8" BorderBrush="#dee2e6" BorderThickness="1" ClipToBounds="True">
+                            <Grid>
+                                <Image x:Name="ProductImagePreview" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <StackPanel x:Name="NoImagePlaceholder" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <TextBlock Text="🖼️" FontSize="40" HorizontalAlignment="Center"/>
+                                    <TextBlock Text="لا توجد صورة" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10,0,0">
+                            <Button Content="📁 اختيار صورة" Background="#01922a" Foreground="White" Padding="15,8" BorderThickness="0" FontSize="12" Margin="0,0,10,0" Click="SelectImageButton_Click"/>
+                            <Button Content="🗑️ إزالة الصورة" Background="#dc3545" Foreground="White" Padding="15,8" BorderThickness="0" FontSize="12" Click="RemoveImageButton_Click"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border><!-- Basic Information -->
+                <Border Background="White" CornerRadius="12,12,12,12" Padding="20" Margin="0,0,0,20">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" Opacity="0.03" BlurRadius="5"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Text="📝 المعلومات الأساسية" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,15"/><!-- Product Name -->
+                        <StackPanel>
+                            <TextBlock Text="اسم المنتج *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                            <TextBox x:Name="NameTextBox" Text="{Binding productViewModel.Name, UpdateSourceTrigger=PropertyChanged}" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14"/>
+                        </StackPanel><!-- Description -->
+                        <StackPanel>
+                            <TextBlock Text="الوصف" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                            <TextBox x:Name="DescriptionTextBox" Text="{Binding productViewModel.Description, UpdateSourceTrigger=PropertyChanged}" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14" TextWrapping="Wrap" AcceptsReturn="True" Height="60"/>
+                        </StackPanel>
+
+                        <!-- Category -->
+                        <StackPanel>
+                            <TextBlock Text="اختر فئة *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                            <ComboBox x:Name="CategoryComboBox" ItemsSource="{Binding productViewModel.Categories}" SelectedItem="{Binding productViewModel.SelectedCategory}" DisplayMemberPath="Name" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14" SelectionChanged="CategoryComboBox_SelectionChanged">
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ComboBox">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                        <Grid>
+                                                            <ToggleButton x:Name="ToggleButton" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Background="Transparent" BorderThickness="0"/>
+                                                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                                                <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                                    <Border x:Name="DropDownBorder" Background="White" BorderThickness="1" BorderBrush="#dee2e6" CornerRadius="8">
+                                                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                                        </ScrollViewer>
+                                                                    </Border>
+                                                                </Grid>
+                                                            </Popup>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ComboBox.Style>
+                            </ComboBox>
+                        <!-- Warehouse Selection (Hidden if Animal Component) -->
+                        <StackPanel Visibility="{Binding productViewModel.IsWarehouseVisible, Converter={StaticResource BoolToVis}}">
+                            <StackPanel Margin="0,10,0,0">
+                                <TextBlock Text="اختر مخزن *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <ComboBox x:Name="WarehouseComboBox" ItemsSource="{Binding productViewModel.Warehouses}" SelectedItem="{Binding productViewModel.SelectedWarehouse}" DisplayMemberPath="Name" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14" SelectionChanged="WarehouseComboBox_SelectionChanged">
+                                    <ComboBox.Style>
+                                        <Style TargetType="ComboBox">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ComboBox">
+                                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                            <Grid>
+                                                                <ToggleButton x:Name="ToggleButton" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Background="Transparent" BorderThickness="0"/>
+                                                                <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                                <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                                                    <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                                        <Border x:Name="DropDownBorder" Background="White" BorderThickness="1" BorderBrush="#dee2e6" CornerRadius="8">
+                                                                            <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                                                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                                            </ScrollViewer>
+                                                                        </Border>
+                                                                    </Grid>
+                                                                </Popup>
+                                                            </Grid>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ComboBox.Style>
+                                </ComboBox>
+                            </StackPanel>
+                            <TextBlock Text="اختر منتج من المخزن *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,10,0,5"/>
+                            <ComboBox x:Name="WarehoseForProductDrobDaown" SelectedItem="{Binding productViewModel.SelectedWarehouseFromProduct}" DisplayMemberPath="Name" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14" SelectionChanged="WarehoseForProductComboBox_SelectionChanged">
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ComboBox">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                        <Grid>
+                                                            <ToggleButton x:Name="ToggleButton" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Background="Transparent" BorderThickness="0"/>
+                                                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                                                <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                                    <Border x:Name="DropDownBorder" Background="White" BorderThickness="1" BorderBrush="#dee2e6" CornerRadius="8">
+                                                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                                        </ScrollViewer>
+                                                                    </Border>
+                                                                </Grid>
+                                                            </Popup>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ComboBox.Style>
+                            </ComboBox>
+                        </StackPanel>
+                        </StackPanel>
+
+                    </StackPanel>
+                </Border><!-- Pricing and Inventory -->
+                <Border Background="White" CornerRadius="12,12,12,12" Padding="20" Margin="0,0,0,20">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="1" Opacity="0.03" BlurRadius="5"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock Text="💰 التسعير والمخزون" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <!-- Price (Base) -->
+                            <StackPanel Grid.Column="0" Visibility="{Binding productViewModel.IsBasePriceVisible, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="سعر البيع *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox x:Name="PriceTextBox" Text="{Binding productViewModel.Price, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+
+                            <!-- Haba Pricing -->
+                            <StackPanel Grid.Column="0" Visibility="{Binding productViewModel.IsHabaVisible, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="سعر الحبة" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceHaba, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                <TextBlock Text="سعر نص حبة" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceNusHaba, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                <TextBlock Text="سعر ربع حبة" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceRobHaba, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+
+                            <!-- Nafar Pricing -->
+                            <StackPanel Grid.Column="0" Visibility="{Binding productViewModel.IsNafarVisible, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="سعر النفر" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceNafar, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                <TextBlock Text="سعر نص نفر" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceNusNafar, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                <TextBlock Text="سعر نفر ونص" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceRobNafar, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+
+                            <!-- Kabeer Pricing -->
+                            <StackPanel Grid.Column="0" Visibility="{Binding productViewModel.IsKabeerVisible, Converter={StaticResource BoolToVis}}">
+                                <TextBlock Text="سعر الكبير" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceKabeer, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                <TextBlock Text="سعر الوسط" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceWasat, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,5"/>
+                                <TextBlock Text="سعر الصغير" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox Text="{Binding productViewModel.PriceSagheer, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Margin="0,10,0,0">
+                            <TextBlock Text="  وحدة القياس *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                            <ComboBox x:Name="InvontryTypeComb" SelectedValue="{Binding productViewModel.PortionUnits}" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14">
+                                <ComboBox.Style>
+                                    <Style TargetType="ComboBox">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ComboBox">
+                                                    <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                        <Grid>
+                                                            <ToggleButton x:Name="ToggleButton" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Background="Transparent" BorderThickness="0"/>
+                                                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="3,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                                                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide">
+                                                                <Grid x:Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                                                    <Border x:Name="DropDownBorder" Background="White" BorderThickness="1" BorderBrush="#dee2e6" CornerRadius="8">
+                                                                        <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+                                                                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                                                        </ScrollViewer>
+                                                                    </Border>
+                                                                </Grid>
+                                                            </Popup>
+                                                        </Grid>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ComboBox.Style>
+                            </ComboBox>
+                        </StackPanel>
+                        <Grid Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions><!-- Stock Quantity -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="الكمية *" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox x:Name="StockTextBox" Text="{Binding productViewModel.StockQuantity, UpdateSourceTrigger=PropertyChanged}" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="عدد الأفراد" FontSize="14" FontWeight="Medium" Foreground="#495057" Margin="0,0,0,5"/>
+                                <TextBox x:Name="PersonNumberFoodTextBox" Text="{Binding productViewModel.PersonNumberFood, UpdateSourceTrigger=PropertyChanged}" Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="12,10" FontSize="14"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer><!-- Action Buttons -->
+        <Border Grid.Row="2" Background="White" CornerRadius="15,15,0,0" Padding="25,20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions><!-- Cancel Button -->
+                <Button Grid.Column="0" Content="❌ إلغاء" Background="#6c757d" Foreground="White" Padding="20,12" BorderThickness="0" FontWeight="SemiBold" FontSize="14" Click="CancelButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button><!-- Update Button -->
+                <Button Grid.Column="2" Content="✅ تحديث المنتج" Background="#01922a" Foreground="White" Padding="20,12" BorderThickness="0" FontWeight="SemiBold" FontSize="14" Click="UpdateButton_Click">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <Border.Effect>
+                                                <DropShadowEffect Color="#01922a" Direction="270" ShadowDepth="3" Opacity="0.2" BlurRadius="8"/>
+                                            </Border.Effect>
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+    </Border>
+</Window>

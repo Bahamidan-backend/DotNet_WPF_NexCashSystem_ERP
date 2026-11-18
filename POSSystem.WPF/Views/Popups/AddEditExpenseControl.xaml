@@ -1,0 +1,276 @@
+<UserControl x:Class="POSSystem.WPF.Views.Popups.AddEditExpenseControl" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             Width="620" 
+             Height="680" 
+             Background="Transparent" 
+             FlowDirection="RightToLeft">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#f8f9fa" CornerRadius="16" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Header -->
+            <Border Grid.Row="0" Background="White" Padding="25,20" BorderBrush="#e9ecef" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding WindowTitle}" FontSize="20" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                        <TextBlock Text="إدارة المصروفات الشهرية واليومية" FontSize="14" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="✕" FontSize="20" Foreground="#6c757d" Background="Transparent" BorderThickness="0" Padding="10" Width="40" Height="40" Cursor="Hand" Click="CloseButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#f8f9fa"/>
+                                        <Setter Property="Foreground" Value="#dc3545"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+            
+            <!-- Form Content -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="25">
+                <StackPanel>
+                    <!-- Basic Information -->
+                    <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,20" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="📝 المعلومات الأساسية" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,15"/>
+                            
+                            <!-- Expense Name -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="اسم المصروف (مثال: مواد نظافة) *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <TextBox x:Name="NameTextBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+                            
+                            <!-- Amount -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="المبلغ (ريال) *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <TextBox x:Name="AmountTextBox" Text="{Binding AmountString, UpdateSourceTrigger=PropertyChanged}" TextChanged="AmountTextBox_TextChanged" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+                            
+                            <!-- Expense Account / Category (Note 8) -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="حساب المصروفات / جهة الصرف (أدوات وقرطاسية • مصاريف المطعم • كهرباء • زكاة • ضرائب...) *" FontSize="13.5" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,4"/>
+                                <TextBlock Text="💡 يمكنك اختيار حساب جاهز من القائمة أو كتابة اسم حساب جديد مباشرة لتسجيل المبلغ تحته:" FontSize="11.5" Foreground="#64748b" Margin="0,0,0,6"/>
+                                <ComboBox x:Name="CategoryComboBox"
+                                          ItemsSource="{Binding Categories}"
+                                          SelectedItem="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          Text="{Binding SelectedCategory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEditable="True"
+                                          Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="15,10" FontSize="14" Height="45">
+                                    <ComboBox.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </ComboBox.Resources>
+                                </ComboBox>
+                            </StackPanel>
+                            
+                            <!-- Expense Type -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="نوع المصروف *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <ComboBox x:Name="TypeComboBox" 
+                                          ItemsSource="{Binding ExpenseTypes}" 
+                                          SelectedItem="{Binding SelectedExpenseTypeItem, UpdateSourceTrigger=PropertyChanged}" 
+                                          DisplayMemberPath="Display"
+                                          Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="15,12" FontSize="14" Height="45">
+                                    <ComboBox.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </ComboBox.Resources>
+                                </ComboBox>
+                            </StackPanel>
+                            
+                            <!-- Payment Method (Cash or Wallets) -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="طريقة الدفع (مصدر الصرف - الصندوق أو المحافظ) *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <ComboBox x:Name="PaymentMethodComboBox" 
+                                          ItemsSource="{Binding PaymentMethods}" 
+                                          SelectedItem="{Binding SelectedPaymentMethodItem, UpdateSourceTrigger=PropertyChanged}" 
+                                          DisplayMemberPath="Display"
+                                          SelectionChanged="PaymentMethodComboBox_SelectionChanged"
+                                          Background="White" BorderBrush="#dee2e6" BorderThickness="1" Padding="15,12" FontSize="14" Height="45">
+                                    <ComboBox.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </ComboBox.Resources>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <!-- Live Available Balance Indicator + Interactive Wallet Chips -->
+                            <Border x:Name="AvailableBalanceBorder" Background="#f0fdf4" BorderBrush="#86efac" BorderThickness="1.5" CornerRadius="10" Padding="14,10" Margin="0,0,0,15">
+                                <StackPanel>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock x:Name="AvailableBalanceIcon" Text="💳" FontSize="15" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="AvailableBalanceLabel" Text="الرصيد المتاح في جهة الصرف:" FontSize="13" FontWeight="SemiBold" Foreground="#166534" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                        <TextBlock x:Name="AvailableBalanceTextBlock" Grid.Column="2" Text="جاري التحميل..." FontSize="14" FontWeight="Bold" Foreground="#15803d" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <ItemsControl x:Name="WalletBalancesChipsControl" Margin="0,8,0,0">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Click="WalletChip_Click" Tag="{Binding}" Cursor="Hand" Margin="0,0,6,6" Padding="8,4" Background="White" BorderBrush="#cbd5e1" BorderThickness="1">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding Display}" FontSize="11" FontWeight="SemiBold" Foreground="#1e293b" Margin="0,0,4,0"/>
+                                                        <TextBlock Text="{Binding BalanceDisplay}" FontSize="11" FontWeight="Bold" Foreground="#0284c7"/>
+                                                    </StackPanel>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Expense Date -->
+                            <StackPanel Margin="0,0,0,0">
+                                <TextBlock Text="تاريخ المصروف *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <DatePicker x:Name="ExpenseDatePicker" SelectedDate="{Binding ExpenseDate}" Background="#f8f9fa" BorderBrush="#dee2e6" BorderThickness="1" Padding="15,12" FontSize="14">
+                                    <DatePicker.Resources>
+                                        <Style TargetType="DatePickerTextBox">
+                                            <Setter Property="Background" Value="#f8f9fa"/>
+                                            <Setter Property="BorderBrush" Value="#dee2e6"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Padding" Value="15,12"/>
+                                            <Setter Property="FontSize" Value="14"/>
+                                        </Style>
+                                    </DatePicker.Resources>
+                                </DatePicker>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Additional Information -->
+                    <Border Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,0" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="📋 معلومات إضافية" FontSize="16" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,15"/>
+                            
+                            <!-- Invoice Number -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="رقم الفاتورة / رقم العملية" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <TextBox x:Name="InvoiceNumberTextBox" Text="{Binding InvoiceNumber, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+                            
+                            <!-- Supplier Name -->
+                            <StackPanel Margin="0,0,0,15">
+                                <TextBlock Text="اسم المورد / المستفيد" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <TextBox x:Name="SupplierNameTextBox" Text="{Binding SupplierName, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}"/>
+                            </StackPanel>
+                            
+                            <!-- Notes -->
+                            <StackPanel Margin="0,0,0,0">
+                                <TextBlock Text="ملاحظات" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                                <TextBox x:Name="NotesTextBox" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" TextWrapping="Wrap" AcceptsReturn="True" Height="80"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Action Buttons -->
+            <Border Grid.Row="2" Background="White" Padding="25,20" BorderBrush="#e9ecef" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Cancel Button -->
+                    <Button Grid.Column="0" Content="❌ إلغاء" Background="#f8f9fa" Foreground="#495057" Padding="10" Height="50" BorderThickness="1" BorderBrush="#dee2e6" FontWeight="Bold" FontSize="16" Click="CancelButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#e9ecef"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    <!-- Save Button -->
+                    <Button Grid.Column="2" Content="✅ حفظ" Background="#00358c" Foreground="White" Padding="10" Height="50" BorderThickness="0" FontWeight="Bold" FontSize="16" Click="SaveButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <Border.Effect>
+                                                    <DropShadowEffect Color="#00358c" Direction="270" ShadowDepth="2" Opacity="0.2" BlurRadius="5"/>
+                                                </Border.Effect>
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#1a4b9c"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

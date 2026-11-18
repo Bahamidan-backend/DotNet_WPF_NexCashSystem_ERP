@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="POSSystem.WPF.Views.Popups.ProductFormInventoryControl" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" Width="550">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Styles/CommonStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="White" CornerRadius="16" Margin="20" Padding="0">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Direction="270" ShadowDepth="4" Opacity="0.2" BlurRadius="20"/>
+        </Border.Effect>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions><!-- Header -->
+            <Border Grid.Row="0" Background="#00358c" CornerRadius="16,16,0,0" Padding="25">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock x:Name="FormHeaderTitleText" Text="إضافة منتج جديد" FontSize="22" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right"/>
+                        <TextBlock x:Name="FormHeaderSubTitleText" Text="Add New Product" FontSize="14" Foreground="#AAC4FF" HorizontalAlignment="Right"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Click="CancelButton_Click" Background="Transparent" BorderThickness="0" Cursor="Hand" VerticalAlignment="Top" Margin="10,-10,-10,0">
+                        <TextBlock Text="✕" FontSize="18" Foreground="White" FontWeight="Bold"/>
+                    </Button>
+                </Grid>
+            </Border><!-- Scrollable Form Content -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="550" Padding="30,20">
+                <StackPanel><!-- Basic Info Section -->
+                    <TextBlock Text="المعلومات الأساسية" FontSize="16" FontWeight="SemiBold" Foreground="#00358c" Margin="0,0,0,15" HorizontalAlignment="Right"/><!-- Name -->
+                    <TextBlock Text="اسم المنتج *" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,8" HorizontalAlignment="Right"/>
+                    <TextBox x:Name="NameTextBox" Text="{Binding warehouseManagementProberty.Name, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,20" HorizontalAlignment="Stretch" TextAlignment="Right"/><!-- Description -->
+                    <TextBlock Text="الوصف" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,8" HorizontalAlignment="Right"/>
+                    <TextBox x:Name="DescriptionTextBox" Text="{Binding warehouseManagementProberty.Description, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,20" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Stretch" TextAlignment="Right"/><!-- Category -->
+                    <Separator Background="#EEEEEE" Margin="0,10,0,20"/><!-- Pricing & Inventory Section -->
+                    <TextBlock Text="التسعير والمخزون" FontSize="16" FontWeight="SemiBold" Foreground="#00358c" Margin="0,0,0,15" HorizontalAlignment="Right"/>
+                    <!-- Portion Unit (InvontryTypeComb2) -->
+                    <TextBlock Text="وحدة القياس *" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,8" HorizontalAlignment="Right"/>
+                    <ComboBox x:Name="InvontryTypeComb2" DisplayMemberPath="Name" Style="{StaticResource {x:Type ComboBox}}" Background="White" BorderBrush="#e9ecef" Padding="10,8" FontSize="13" Margin="0,0,0,20" HorizontalAlignment="Stretch" FlowDirection="RightToLeft"/>
+                    <!-- Minimum Stock Level -->
+                    <TextBlock Text="الحد الأدنى للتنبيه (حد إعادة الطلب)" FontWeight="SemiBold" Foreground="#2C3E50" Margin="0,0,0,8" HorizontalAlignment="Right"/>
+                    <TextBox x:Name="MinimumStockTextBox" Text="{Binding warehouseManagementProberty.MinimumStockLevel, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ModernTextBoxStyle}" Margin="0,0,0,20" HorizontalAlignment="Stretch" TextAlignment="Right"/>
+                </StackPanel>
+            </ScrollViewer><!-- Footer Buttons -->
+            <Border Grid.Row="2" Background="#F8F9FA" CornerRadius="0,0,16,16" Padding="30,20" BorderBrush="#EEEEEE" BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <Button x:Name="SaveButton" Content="حفظ المنتج" Style="{StaticResource SuccessButtonStyle}" Click="SaveButton_Click" Width="150" Height="45" FontSize="16" Margin="0,0,15,0"/>
+                    <Button x:Name="CancelButton" Content="إلغاء" Style="{StaticResource DeleteButtonStyle}" Background="#95A5A6" Click="CancelButton_Click" Width="120" Height="45" FontSize="16"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

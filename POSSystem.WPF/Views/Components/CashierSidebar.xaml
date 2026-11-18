@@ -1,0 +1,186 @@
+﻿<UserControl x:Class="POSSystem.WPF.Views.Components.CashierSidebar" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="280">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/><!-- Custom Navigation Button Style (Same as Admin) -->
+            <Style x:Key="NavigationButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Foreground" Value="White"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                <Setter Property="Padding" Value="20,15"/>
+                <Setter Property="Height" Value="48"/>
+                <Setter Property="FontWeight" Value="Normal"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="12" Margin="10,2">
+                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#1AFFFFFF"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#33FFFFFF"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style><!-- Custom Active Navigation Button Style (Same as Admin) -->
+            <Style x:Key="ActiveNavigationButtonStyle" TargetType="Button" BasedOn="{StaticResource NavigationButtonStyle}">
+                <Setter Property="Background" Value="White"/>
+                <Setter Property="Foreground" Value="#00358c"/>
+                <Setter Property="FontWeight" Value="Bold"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="12" Margin="10,2">
+                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="15,0"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Border" Property="Background" Value="#F0F0F0"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style><!-- Thin ScrollBar Style -->
+            <Style x:Key="ThinScrollBarStyle" TargetType="ScrollBar">
+                <Setter Property="Width" Value="5"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid x:Name="GridRoot" Width="5" Background="Transparent">
+                                <Track x:Name="PART_Track" IsDirectionReversed="true" Focusable="false">
+                                    <Track.Thumb>
+                                        <Thumb>
+                                            <Thumb.Template>
+                                                <ControlTemplate TargetType="Thumb">
+                                                    <Border Background="#60FFFFFF" CornerRadius="2"/>
+                                                </ControlTemplate>
+                                            </Thumb.Template>
+                                        </Thumb>
+                                    </Track.Thumb>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#00358c" Margin="0,0,0,0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions><!-- Header -->
+            <StackPanel Grid.Row="0" Margin="0,30,0,30">
+                <Image Source="pack://application:,,,/POSSystem.WPF;component/Assets/NexCashLogo.png" Height="60" Margin="0,0,0,15" RenderOptions.BitmapScalingMode="HighQuality"/>
+                <TextBlock Text="{Binding WelcomeMessage}" FontSize="14" HorizontalAlignment="Center" Margin="0,5,0,0" Foreground="White" FontWeight="SemiBold"/>
+                <Border Background="#33FFFFFF" CornerRadius="10" Padding="10,4" HorizontalAlignment="Center" Margin="0,8,0,0">
+                    <TextBlock Text="{Binding RoleBadgeDisplayText, FallbackValue=كاشير}" FontSize="12" Foreground="White" FontWeight="Bold"/>
+                </Border>
+                <Button x:Name="OpenAdminPanelButton"
+                        Content="🛡️ دخول لوحة الإدارة"
+                        Visibility="{Binding CanAccessAdminPanel, Converter={StaticResource BoolToVisibilityConverter}}"
+                        Click="NavigationButton_Click"
+                        Tag="AdminPanel"
+                        Background="#1e40af"
+                        Foreground="#fde047"
+                        BorderBrush="#60a5fa"
+                        BorderThickness="1"
+                        FontWeight="Bold"
+                        FontSize="13"
+                        Height="40"
+                        Margin="20,12,20,0"
+                        Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </StackPanel><!-- Navigation Menu -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0">
+                <ScrollViewer.Resources>
+                    <Style TargetType="ScrollBar" BasedOn="{StaticResource ThinScrollBarStyle}"/>
+                </ScrollViewer.Resources>
+                <StackPanel Margin="0,10">
+                    <Button x:Name="DashboardButton" Content="🍽️ القائمة" Command="{Binding Commands.NavigateToDashboardCommand}" Style="{StaticResource ActiveNavigationButtonStyle}" Click="NavigationButton_Click" Tag="Dashboard"/>
+                    <Button x:Name="OrdersButton" Content="📅 سجل الطلبات" Command="{Binding Commands.NavigateToOrdersCommand}" Style="{StaticResource NavigationButtonStyle}" Click="NavigationButton_Click" Tag="Orders"/>
+                    <Button x:Name="ReturnOrdersButton" Content="🔄 المرتجعات" Command="{Binding Commands.NavigateToReturnOrdersCommand}" Style="{StaticResource NavigationButtonStyle}" Click="NavigationButton_Click" Tag="ReturnOrders"/>
+                    <Button x:Name="CashBoxReportButton" Content="💰 تقرير الصندوق" Command="{Binding Commands.NavigateToCashBoxReportCommand}" Style="{StaticResource NavigationButtonStyle}" Click="NavigationButton_Click" Tag="CashBoxReport"/>
+                    <Button x:Name="SettingsButton" Content="⚙️ الإعدادات" Command="{Binding Commands.NavigateToSettingsCommand}" Style="{StaticResource NavigationButtonStyle}" Click="NavigationButton_Click" Tag="Settings"/>
+                </StackPanel>
+            </ScrollViewer><!-- Shift Management Button -->
+            <Border Grid.Row="2" Margin="25,10,25,10" CornerRadius="20">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding HasActiveShift}" Value="True">
+                                <Setter Property="Background" Value="#01922a"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding HasActiveShift}" Value="False">
+                                <Setter Property="Background" Value="#6c757d"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Button Content="{Binding ShiftButtonText}" Command="{Binding Commands.ManageShiftCommand}" Background="Transparent" Foreground="White" HorizontalAlignment="Stretch" Padding="20,0" BorderThickness="0" Height="40" FontWeight="SemiBold" FontSize="14" Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Border><!-- Logout Button -->
+            <Border Grid.Row="3" Margin="25,10,25,25" CornerRadius="20" Effect="{x:Null}">
+                <Button Command="{Binding Commands.LogoutCommand}" Background="White" Foreground="#dc3545" HorizontalAlignment="Stretch" Padding="15,0" BorderThickness="0" Height="40" FontWeight="Bold" FontSize="13" Cursor="Hand">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="🚪" Margin="0,0,10,0"/>
+                            <TextBlock Text="تسجيل الخروج"/>
+                        </StackPanel>
+                    </Button.Content>
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="20"/>
+                        </Style>
+                    </Button.Resources>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="20">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#F8F9FA"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#E9ECEF"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

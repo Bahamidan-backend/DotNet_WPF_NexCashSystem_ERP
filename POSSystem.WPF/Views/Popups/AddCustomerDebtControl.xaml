@@ -1,0 +1,148 @@
+<UserControl x:Class="POSSystem.WPF.Views.Popups.AddCustomerDebtControl" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             Width="480" 
+             Height="460" 
+             Background="Transparent" 
+             FlowDirection="RightToLeft">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Styles/CommonStyles.xaml"/>
+                <ResourceDictionary Source="../../Styles/CashierStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Border Background="#f8f9fa" CornerRadius="16" ClipToBounds="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Header -->
+            <Border Grid.Row="0" Background="White" Padding="25,20" BorderBrush="#e9ecef" BorderThickness="0,0,0,1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="➕ إضافة عميل جديد" FontSize="20" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center"/>
+                        <TextBlock Text="أدخل اسم العميل ورقم الهاتف وسقف المديونية" FontSize="14" Foreground="#6c757d" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="✕" FontSize="20" Foreground="#6c757d" Background="Transparent" BorderThickness="0" Padding="10" Width="40" Height="40" Cursor="Hand" Click="CloseButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#f8f9fa"/>
+                                        <Setter Property="Foreground" Value="#dc3545"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+            
+            <!-- Form Content (Note 13: Only Name, Phone Number, and Credit Limit) -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="25">
+                <StackPanel>
+                    <!-- Customer Name -->
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,15" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="اسم العميل *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                            <TextBox x:Name="CustomerNameTextBox" FontSize="14" Padding="12,10" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6" Style="{StaticResource ModernTextBoxStyle}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Phone Number -->
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,15" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="رقم الهاتف *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" Margin="0,0,0,8"/>
+                            <TextBox x:Name="PhoneNumberTextBox" FontSize="14" Padding="12,10" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6" Style="{StaticResource ModernTextBoxStyle}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Credit Limit -->
+                    <Border Background="White" CornerRadius="12" Padding="18" Margin="0,0,0,5" BorderBrush="#e9ecef" BorderThickness="1">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,8">
+                                <TextBlock Text="سقف المديونية (0 = مفتوح) *" FontSize="14" FontWeight="SemiBold" Foreground="#2c3e50" HorizontalAlignment="Right"/>
+                                <TextBlock Text="ريال" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Left"/>
+                            </Grid>
+                            <TextBox x:Name="CreditLimitTextBox" Text="0" FontSize="14" Padding="12,10" Background="#f8f9fa" BorderThickness="1" BorderBrush="#dee2e6" Style="{StaticResource ModernTextBoxStyle}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Action Buttons -->
+            <Border Grid.Row="2" Background="White" Padding="25,18" BorderBrush="#e9ecef" BorderThickness="0,1,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Cancel Button -->
+                    <Button Grid.Column="0" Content="❌ إلغاء" Background="#f8f9fa" Foreground="#495057" Padding="10" Height="46" BorderThickness="1" BorderBrush="#dee2e6" FontWeight="Bold" FontSize="15" Click="CancelButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#e9ecef"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    
+                    <!-- Save Button -->
+                    <Button Grid.Column="2" Content="✅ حفظ العميل" Background="#01922a" Foreground="White" Padding="10" Height="46" BorderThickness="0" FontWeight="Bold" FontSize="15" Click="SaveButton_Click">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#017a23"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

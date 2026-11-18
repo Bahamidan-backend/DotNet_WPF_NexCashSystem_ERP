@@ -1,0 +1,285 @@
+<UserControl x:Class="POSSystem.WPF.Views.Popups.CashierLeftoverDisposalPopup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             Width="640" MaxHeight="740"
+             FlowDirection="RightToLeft"
+             Background="Transparent">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#1e293b"/>
+        </Style>
+
+        <Style x:Key="QuickQtyButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#f1f5f9"/>
+            <Setter Property="Foreground" Value="#334155"/>
+            <Setter Property="BorderBrush" Value="#cbd5e1"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,5"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="bdr" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bdr" Property="Background" Value="#e2e8f0"/>
+                                <Setter TargetName="bdr" Property="BorderBrush" Value="#00358c"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Border Background="White" CornerRadius="16" Margin="10">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" Direction="270" ShadowDepth="6" Opacity="0.28" BlurRadius="22"/>
+        </Border.Effect>
+        <Grid Margin="20,18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" BorderBrush="#e2e8f0" BorderThickness="0,0,0,1" Padding="0,0,0,10" Margin="0,0,0,10">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Background="#fef3c7" BorderBrush="#fde68a" BorderThickness="1" CornerRadius="12" Width="42" Height="42" Margin="0,0,12,0">
+                            <TextBlock Text="🍱" FontSize="22" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="صرف الأكل الزايد / المتبقي والهدر (شاشة الكاشير)" FontSize="17" FontWeight="Bold" Foreground="#0f172a"/>
+                            <TextBlock Text="صرف المتبقي كـ (غداء عمال • صدقة • هدر وتالف) لخصمه فوراً من الكاشير بكلمة سر المناوبة" FontSize="11.5" Foreground="#64748b" Margin="0,2,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <Button Content="✕" Width="30" Height="30" HorizontalAlignment="Left" Background="#f8fafc" BorderThickness="0" Foreground="#64748b" FontSize="14" FontWeight="Bold" Cursor="Hand" Click="CloseButton_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="15">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Body -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,0,0,10">
+                <StackPanel>
+                    <!-- Mode Switcher (Visible when Cart has items) -->
+                    <Border x:Name="SourceModeBorder" Background="#f1f5f9" CornerRadius="10" Padding="4" Margin="0,0,0,10" Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="6"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="ModeCartBtn" Grid.Column="0" Content="🛒 صرف العناصر المحددة في سلة الطلب" Height="34" Background="#00358c" Foreground="White" BorderThickness="0" FontWeight="Bold" FontSize="12" Cursor="Hand" Click="ModeCartBtn_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button x:Name="ModeDirectBtn" Grid.Column="2" Content="🍲 اختيار صنف من المتبقي في الكاشير" Height="34" Background="Transparent" Foreground="#334155" BorderThickness="0" FontWeight="Bold" FontSize="12" Cursor="Hand" Click="ModeDirectBtn_Click">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+                    </Border>
+
+                    <!-- Section A: Cart Items Summary (When disposing current cart items) -->
+                    <Border x:Name="CartItemsSection" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1" CornerRadius="10" Padding="12" Margin="0,0,0,10" Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock Text="📋 الأصناف المحددة في سلة الطلب لصرفها:" FontWeight="Bold" FontSize="13" Foreground="#00358c" Margin="0,0,0,6"/>
+                            <ItemsControl x:Name="CartPreviewItemsControl">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="6,5" BorderBrush="#e2e8f0" BorderThickness="0,0,0,1">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding DisplayTitle}" FontWeight="SemiBold" FontSize="13" Foreground="#1e293b"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding DeductionDisplay}" FontWeight="Bold" FontSize="13" Foreground="#dc2626" Margin="14,0"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding RemainingAfterDisplay}" FontSize="12" Foreground="#059669" FontWeight="SemiBold"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Section B: Direct Product Selection (When choosing directly from remaining POS stock) -->
+                    <StackPanel x:Name="DirectProductSection" Margin="0,0,0,10">
+                        <TextBlock Text="اختر الصنف المراد صرف المتبقي منه *" FontWeight="Bold" FontSize="13" Margin="0,0,0,4"/>
+                        <ComboBox x:Name="ProductComboBox" Height="38" SelectionChanged="ProductComboBox_SelectionChanged" FontSize="14" Padding="10,6" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+
+                        <!-- Current Remaining & After Preview -->
+                        <Border Background="#f0f9ff" BorderBrush="#bae6fd" BorderThickness="1" CornerRadius="10" Padding="10,8" Margin="0,8,0,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="المتبقي حالياً في الكاشير" FontSize="11.5" Foreground="#475569"/>
+                                    <TextBlock x:Name="CurrentPosRemainingText" Text="0,00" FontSize="16" FontWeight="Bold" Foreground="#0284c7" Margin="0,2,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="المتبقي بعد الصرف" FontSize="11.5" Foreground="#475569"/>
+                                    <TextBlock x:Name="AfterDisposalRemainingText" Text="0,00" FontSize="16" FontWeight="Bold" Foreground="#059669" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Quantity Input + Quick Buttons -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="الكمية المراد صرفها *" FontWeight="Bold" FontSize="12.5" Margin="0,0,0,4"/>
+                                <TextBox x:Name="DisposeQtyTextBox" Text="1" Height="36" FontSize="15" FontWeight="Bold" Foreground="#dc2626" TextAlignment="Center" VerticalContentAlignment="Center" Background="White" BorderBrush="#cbd5e1" BorderThickness="1" TextChanged="DisposeQtyTextBox_TextChanged"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                <TextBlock Text="اختيار سريع للكمية:" FontSize="11.5" Foreground="#64748b" Margin="0,0,0,4"/>
+                                <WrapPanel Orientation="Horizontal">
+                                    <Button Content="نصف (0.5)" Style="{StaticResource QuickQtyButtonStyle}" Click="QuickQtyBtn_Click" Tag="0.5"/>
+                                    <Button Content="واحد (1)" Style="{StaticResource QuickQtyButtonStyle}" Click="QuickQtyBtn_Click" Tag="1"/>
+                                    <Button Content="2" Style="{StaticResource QuickQtyButtonStyle}" Click="QuickQtyBtn_Click" Tag="2"/>
+                                    <Button Content="5" Style="{StaticResource QuickQtyButtonStyle}" Click="QuickQtyBtn_Click" Tag="5"/>
+                                    <Button Content="⚡ صرف كامل المتبقي (تصفير)" Style="{StaticResource QuickQtyButtonStyle}" Background="#fef3c7" BorderBrush="#f59e0b" Foreground="#b45309" Click="QuickFullRemainingBtn_Click"/>
+                                </WrapPanel>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+
+                    <!-- Disposal Reason Type Selector -->
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock Text="نوع / سبب الصرف *" FontWeight="Bold" FontSize="12.5" Margin="0,0,0,6"/>
+                        <UniformGrid Columns="2" Rows="2">
+                            <Button x:Name="ReasonStaffBtn" Content="👷 غداء / إطعام العمال" Height="38" Margin="0,0,6,6" Background="#00358c" Foreground="White" BorderBrush="#00358c" BorderThickness="1" FontWeight="Bold" FontSize="12.5" Cursor="Hand" Click="ReasonBtn_Click" Tag="StaffMeal">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button x:Name="ReasonCharityBtn" Content="🤝 صدقة / تبرع خيري" Height="38" Margin="0,0,0,6" Background="#f8fafc" Foreground="#334155" BorderBrush="#cbd5e1" BorderThickness="1" FontWeight="Bold" FontSize="12.5" Cursor="Hand" Click="ReasonBtn_Click" Tag="Charity">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button x:Name="ReasonWasteBtn" Content="🗑️ هدر / تالف نهاية اليوم" Height="38" Margin="0,0,6,0" Background="#f8fafc" Foreground="#334155" BorderBrush="#cbd5e1" BorderThickness="1" FontWeight="Bold" FontSize="12.5" Cursor="Hand" Click="ReasonBtn_Click" Tag="Waste">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                            <Button x:Name="ReasonOtherBtn" Content="☕ ضيافة / صرف آخر" Height="38" Margin="0,0,0,0" Background="#f8fafc" Foreground="#334155" BorderBrush="#cbd5e1" BorderThickness="1" FontWeight="Bold" FontSize="12.5" Cursor="Hand" Click="ReasonBtn_Click" Tag="Other">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </UniformGrid>
+                    </StackPanel>
+
+                    <!-- Optional Notes -->
+                    <StackPanel Margin="0,0,0,10">
+                        <TextBlock Text="ملاحظة إضافية (اختياري)" FontWeight="SemiBold" FontSize="12" Foreground="#64748b" Margin="0,0,0,4"/>
+                        <TextBox x:Name="DisposalNotesTextBox" Height="34" FontSize="12.5" Padding="10,5" Background="#f8fafc" BorderBrush="#cbd5e1" BorderThickness="1"/>
+                    </StackPanel>
+
+                    <!-- Mandatory Unified Shift Password Box -->
+                    <Border Background="#fff1f2" BorderBrush="#fecdd3" BorderThickness="1.5" CornerRadius="10" Padding="12,10">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                <TextBlock Text="🔒" FontSize="15" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                <TextBlock Text="كلمة سر المناوبة الموحدة (لاعتماد وصرف الكمية) *" FontWeight="Bold" FontSize="13" Foreground="#be123c" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <TextBlock Text="أدخل كلمة سر المناوبة لاعتماد صرف الأكل الزايد أو التالف من الكاشير:" FontSize="11.5" Foreground="#9f1239" Margin="0,0,0,6"/>
+                            <PasswordBox x:Name="SecretPinPasswordBox" Height="38" FontSize="15" Padding="10,6" Background="White" BorderBrush="#fda4af" BorderThickness="1" KeyDown="SecretPinPasswordBox_KeyDown"/>
+                            <TextBlock x:Name="PinErrorText" Text="⚠️ كلمة سر المناوبة غير صحيحة!" FontSize="12" FontWeight="Bold" Foreground="#dc2626" Margin="0,5,0,0" Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Footer Actions -->
+            <Border Grid.Row="2" BorderBrush="#e2e8f0" BorderThickness="0,1,0,0" Padding="0,12,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Content="إلغاء" Width="100" Height="42" Background="#f1f5f9" Foreground="#475569" BorderThickness="0" FontWeight="Bold" FontSize="14" Cursor="Hand" Click="CloseButton_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
+                    <Button x:Name="ConfirmDisposalButton" Grid.Column="2" Content="🔒 اعتماد وصرف الكمية فوراً" Padding="24,0" Height="42" Background="#dc2626" Foreground="White" BorderThickness="0" FontWeight="Bold" FontSize="14.5" Cursor="Hand" Click="ConfirmDisposalButton_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="bdr" Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="bdr" Property="Background" Value="#b91c1c"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,165 @@
+﻿<UserControl x:Class="POSSystem.WPF.Views.DashboardView" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="1200" FlowDirection="RightToLeft">
+    <UserControl.Resources><!-- Dashboard Card Button Style -->
+        <Style x:Key="DashboardCardStyle" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#e9ecef"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Width" Value="260"/>
+            <Setter Property="Height" Value="180"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="15">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#000000" Direction="270" ShadowDepth="2" Opacity="0.05" BlurRadius="10"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#f8f9fa"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#00358c"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#e9ecef"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid Background="Transparent">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions><!-- Header -->
+        <Border Grid.Row="0" Margin="30,30,30,10">
+            <StackPanel>
+                <TextBlock Text="لوحة التحكم الرئيسية" FontSize="28" FontWeight="Bold" Foreground="#2c3e50" Margin="0,0,0,10"/>
+                <TextBlock Text="مرحباً بك في نظام نقاط البيع. قم باختيار القسم الذي تود إدارته." FontSize="14" Foreground="#6c757d" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border><!-- Dashboard Cards Grid -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="10,10,10,30">
+            <StackPanel Margin="10,0"><!-- Group: Operations -->
+                <TextBlock Text="الإدارة والتشغيل" FontSize="16" FontWeight="Bold" Foreground="#2c3e50" Margin="30,10,30,0"/>
+                <WrapPanel HorizontalAlignment="Center"><!-- Products -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToProductsCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="📦" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="إدارة المنتجات" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="إضافة وتعديل المنتجات والفئات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Inventory -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToInventoryCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="🏪" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="المخزون" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="متابعة كميات المنتجات والنواقص" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Purchase Management -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToPurchaseManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="🛒" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="إدارة المشتريات" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="تسجيل فواتير الشراء والموردين" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Discounts -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToDiscountsCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="💰" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="الخصومات" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="إدارة العروض وكوبونات الخصم" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Addon Management -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToAddonManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="🛠️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="إدارة الإضافات" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="تخصيص الإضافات للمنتجات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Returns Management (NEW) -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToReturnsManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="🔙" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="إدارة المرتجعات" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="متابعة المرتجعات ومعالجة طلبات الاسترجاع" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+
+                <TextBlock Text="إدارة الموارد" FontSize="16" FontWeight="Bold" Foreground="#2c3e50" Margin="30,20,30,0"/>
+                <WrapPanel HorizontalAlignment="Center"><!-- Employee Management -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToEmployeeManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="👨‍💼" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="إدارة الموظفين" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="إدارة بيانات الموظفين والصلاحيات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Customer Management -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToCustomerManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="👥" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="إدارة العملاء" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="قاعدة بيانات العملاء والديون" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Cashier Management -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToCashierManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="📠" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="حسابات الكاشير" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="متابعة صناديق الكاشير والورديات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Kitchen Management (NEW) -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToKitchenManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="👨‍🍳" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="إدارة المطابخ" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="إعداد المطابخ والطابعات وتتبع الطلبات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+
+                <TextBlock Text="المالية والتقارير" FontSize="16" FontWeight="Bold" Foreground="#2c3e50" Margin="30,20,30,0"/>
+                <WrapPanel HorizontalAlignment="Center"><!-- Expense Management -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToExpenseManagementCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="💵" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="المصروفات" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="تسجيل ومتابعة المصروفات التشغيلية" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Financial Overview (NEW) -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToFinancialOverviewCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="📊" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="التقارير المالية" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="نظرة مالية شاملة للأرباح والمصروفات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button><!-- Monthly Reports -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToMonthlyReportsCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="📑" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="التقارير العامة" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="تقارير المبيعات والأرباح الشهرية" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+
+                <TextBlock Text="إعدادات النظام" FontSize="16" FontWeight="Bold" Foreground="#2c3e50" Margin="30,20,30,0"/>
+                <WrapPanel HorizontalAlignment="Center"><!-- Settings -->
+                    <Button Style="{StaticResource DashboardCardStyle}" Command="{Binding DataContext.adminDashboardCommand.NavigateToSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}">
+                        <StackPanel>
+                            <TextBlock Text="⚙️" FontSize="40" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                            <TextBlock Text="الإعدادات" FontSize="18" FontWeight="Bold" Foreground="#2c3e50" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                            <TextBlock Text="إعدادات النظام والطابعات" FontSize="12" Foreground="#6c757d" HorizontalAlignment="Center" TextAlignment="Center" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Button>
+                </WrapPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
